@@ -3,10 +3,13 @@
 import { useState } from 'react'
 import supabase from './api/supabase'
 import Head from 'next/head'
-import { ModalComponents } from './componentes/commons/Types/Props'
 import AdicionarTarefa from './componentes/AdicionarTarefaModal'
 
 import { AddCircle, FilterNone } from '@mui/icons-material'
+
+interface ModalComponents {
+  [key: string]: JSX.Element
+}
 
 const Home = () => {
   const [activeModal, setActiveModal] = useState<boolean>(false)

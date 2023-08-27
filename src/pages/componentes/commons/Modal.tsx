@@ -1,15 +1,27 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, ReactNode } from 'react'
 import { Button } from '@mui/material'
 
 import { FC } from 'react'
-import { PropsModal } from './Types/Props'
 
 import { ThemeProvider, createTheme, styled } from '@mui/material/styles'
 import { Tomorrow } from 'next/font/google'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
+
+interface PropsModal {
+  title: string
+  subtitle?: string
+  icon: ReactNode
+  buttonIcon?: JSX.Element | null
+  buttonLabel: string
+  isOpen: boolean
+  onClose: () => void
+  children: ReactNode
+  setor?: number | null
+  onClickButton: () => void
+}
 
 const theme = createTheme({
   palette: {

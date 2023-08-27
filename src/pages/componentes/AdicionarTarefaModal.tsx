@@ -1,6 +1,13 @@
 ;('')
 
-import React, { useState, FC, useEffect } from 'react'
+import React, {
+  useState,
+  FC,
+  useEffect,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+} from 'react'
 
 import supabase from './../api/supabase'
 
@@ -9,10 +16,19 @@ import Modal from './commons/Modal'
 import { AddCircle } from '@mui/icons-material'
 
 import { Tomorrow } from 'next/font/google'
-import { PropsAdicionarTarefa } from './commons/Types/Props'
-import PropsSetores from './Types/Props'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
+
+interface PropsAdicionarTarefa {
+  activeModal: boolean
+  setActiveModal: Dispatch<SetStateAction<boolean>>
+}
+interface PropsSetores {
+  id: number
+  setor: string
+  responsavel: string
+  created_at: Date
+}
 
 const BlackTextField = styled(TextField)`
   input {
