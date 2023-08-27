@@ -1,0 +1,6 @@
+/node_modules
+/.next
+/public
+/.*rc
+/*.json
+/*.lock
