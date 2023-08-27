@@ -1,4 +1,4 @@
-export interface PropsSetores {
+export default interface PropsSetores {
   id: number
   setor: string
   responsavel: string

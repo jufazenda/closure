@@ -9,7 +9,7 @@ const montserrat = Montserrat({ subsets: ['latin'], weight: '500' })
 interface LayoutProps {
   children: ReactNode
 }
-export const Layout = ({ children }: LayoutProps) => {
+const Layout = ({ children }: LayoutProps) => {
   return (
     <div className={montserrat.className}>
       <Header />
@@ -17,3 +17,5 @@ export const Layout = ({ children }: LayoutProps) => {
     </div>
   )
 }
+
+export default Layout
