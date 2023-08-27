@@ -36,30 +36,32 @@ const Home = () => {
       <Head>
         <title>Closure - Organizador de Fechamento</title>
       </Head>
-      <div className='py-12 px-6 md:px-20 space-y-10 md:space-y-12'>
-        <div>
-          <div className='flex items-center justify-end text-md gap-10'>
-            <span
-              className='flex cursor-pointer font-semibold gap-1'
-              onClick={() => openModal('AdicionarTarefa')}
-            >
-              <AddCircle />
-              Adicionar
-            </span>
+      <main>
+        <div className='py-12 px-6 md:px-20 space-y-10 md:space-y-12'>
+          <div>
+            <div className='flex items-center justify-end text-md gap-10'>
+              <span
+                className='flex cursor-pointer font-semibold gap-1'
+                onClick={() => openModal('AdicionarTarefa')}
+              >
+                <AddCircle />
+                Adicionar
+              </span>
 
-            <span
-              className='flex cursor-pointer font-semibold gap-1'
-              //onClick={option.onClick}
-            >
-              <FilterNone />
-              Filtrar
-            </span>
+              <span
+                className='flex cursor-pointer font-semibold gap-1'
+                //onClick={option.onClick}
+              >
+                <FilterNone />
+                Filtrar
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div>aa</div>
-        {activeModal && chooseModal(modalComponentName)}
-      </div>
+          <div>aa</div>
+          {activeModal && chooseModal(modalComponentName)}
+        </div>
+      </main>
     </>
   )
 }
