@@ -6,11 +6,11 @@ import supabase from './../api/supabase'
 
 import { Autocomplete, Button, TextField, styled } from '@mui/material'
 import Modal from './commons/Modal'
-import { PropsAdicionarTarefa } from './commons/Types/Props'
 import { AddCircle } from '@mui/icons-material'
 
 import { Tomorrow } from 'next/font/google'
-import { PropsSetores } from './Types/Props'
+import { PropsAdicionarTarefa } from './commons/Types/Props'
+import PropsSetores from './Types/Props'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 

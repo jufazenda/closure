@@ -1,6 +1,6 @@
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 
-export default interface PropsModal {
+export interface PropsModal {
   title: string
   subtitle?: string
   icon: ReactNode
@@ -13,7 +13,7 @@ export default interface PropsModal {
   onClickButton: () => void
 }
 
-export default interface PropsAdicionarTarefa {
+export interface PropsAdicionarTarefa {
   activeModal: boolean
   setActiveModal: Dispatch<SetStateAction<boolean>>
 }
