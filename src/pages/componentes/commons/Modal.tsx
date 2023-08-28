@@ -95,10 +95,9 @@ const Modal: FC<PropsModal> = ({
             </span>
             <Button
               variant='contained'
-              className={`bg-black hover:${getColorClass()} hover:text-white`}
+              className={`bg-black hover:bg-white hover:text-white`}
               onClick={onClickButton}
               startIcon={buttonIcon}
-              
             >
               {buttonLabel}
             </Button>
@@ -108,5 +107,6 @@ const Modal: FC<PropsModal> = ({
     </ThemeProvider>
   )
 }
+//${getColorClass()}
 
 export default Modal
