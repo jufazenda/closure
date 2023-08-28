@@ -121,7 +121,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
       .order('setor')
 
     if (error) {
-      console.error('Erro ao buscar dados:', error.message)
+      console.error('Erro ao buscar dados setores:', error.message)
       return
     }
     setAllSetores(data)
@@ -134,7 +134,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
       .order('created_at')
 
     if (error) {
-      console.error('Erro ao buscar dados:', error.message)
+      console.error('Erro ao buscar dados tarefas:', error.message)
       return
     }
     setAllTarefas(data)
@@ -148,7 +148,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
       .single()
 
     if (error) {
-      console.error('Erro ao buscar dados:', error.message)
+      console.error('Erro ao buscar dados tarefas ID:', error.message)
       return
     }
 

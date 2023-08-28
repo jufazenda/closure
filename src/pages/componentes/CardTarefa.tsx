@@ -53,7 +53,7 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
       .order('setor')
 
     if (error) {
-      console.error('Erro ao buscar dados:', error.message)
+      console.error('Erro ao buscar dados setores:', error.message)
       return
     } else {
       const setorTarefa = data.find(
