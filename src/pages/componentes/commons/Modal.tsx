@@ -7,6 +7,7 @@ import { FC } from 'react'
 
 import { ThemeProvider, createTheme, styled } from '@mui/material/styles'
 import { Tomorrow } from 'next/font/google'
+import { blue } from '@mui/material/colors'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 
@@ -64,8 +65,6 @@ const Modal: FC<PropsModal> = ({
     }
   }
 
-  console.log(getColorClass())
-
   return (
     <ThemeProvider theme={theme}>
       <div
@@ -95,11 +94,11 @@ const Modal: FC<PropsModal> = ({
               CANCELAR
             </span>
             <Button
-              color='primary'
               variant='contained'
-              className={`bg-black hover:${getColorClass()} !important hover:text-white`}
+              className={`bg-black hover:${getColorClass()} hover:text-white`}
               onClick={onClickButton}
               startIcon={buttonIcon}
+              
             >
               {buttonLabel}
             </Button>

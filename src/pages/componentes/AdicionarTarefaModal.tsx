@@ -299,7 +299,6 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
               value={tarefa}
               sx={{
                 '.MuiFormLabel-root': {
-                  fontFamily: 'Montserrat',
                   alignItems: 'center',
                   display: 'flex',
                   height: '25px',
@@ -321,7 +320,6 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
               value={numero}
               sx={{
                 '.MuiFormLabel-root': {
-                  fontFamily: 'Montserrat',
                   alignItems: 'center',
                   display: 'flex',
                   height: '25px',
@@ -350,7 +348,6 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
               value={setor}
               sx={{
                 '.MuiFormLabel-root': {
-                  fontFamily: 'Montserrat',
                   alignItems: 'center',
                   display: 'flex',
                   height: '25px',
@@ -366,7 +363,6 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                   variant='outlined'
                   sx={{
                     '.MuiFormLabel-root': {
-                      fontFamily: 'Montserrat',
                       alignItems: 'center',
                       display: 'flex',
                       height: '25px',
@@ -407,7 +403,6 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                     value={horario}
                     sx={{
                       '.MuiFormLabel-root': {
-                        fontFamily: 'Montserrat',
                         alignItems: 'center',
                         display: 'flex',
                         height: '25px',
@@ -436,7 +431,6 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                       }}
                       sx={{
                         '.MuiFormLabel-root': {
-                          fontFamily: 'Montserrat',
                           alignItems: 'center',
                           display: 'flex',
                           height: '25px',
@@ -459,7 +453,6 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                       inputProps={{ min: 0 }}
                       sx={{
                         '.MuiFormLabel-root': {
-                          fontFamily: 'Montserrat',
                           alignItems: 'center',
                           display: 'flex',
                           height: '25px',
@@ -482,7 +475,6 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                       inputProps={{ min: 0 }}
                       sx={{
                         '.MuiFormLabel-root': {
-                          fontFamily: 'Montserrat',
                           alignItems: 'center',
                           display: 'flex',
                           height: '25px',
@@ -505,7 +497,6 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                       inputProps={{ min: 0 }}
                       sx={{
                         '.MuiFormLabel-root': {
-                          fontFamily: 'Montserrat',
                           alignItems: 'center',
                           display: 'flex',
                           height: '25px',
@@ -537,7 +528,6 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                     value={horario}
                     sx={{
                       '.MuiFormLabel-root': {
-                        fontFamily: 'Montserrat',
                         alignItems: 'center',
                         display: 'flex',
                         height: '25px',
@@ -565,7 +555,6 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                     value={pontuacaoMaxima}
                     sx={{
                       '.MuiFormLabel-root': {
-                        fontFamily: 'Montserrat',
                         alignItems: 'center',
                         display: 'flex',
                         height: '25px',
@@ -597,7 +586,6 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                     inputProps={{ min: 0, max: 4 }}
                     sx={{
                       '.MuiFormLabel-root': {
-                        fontFamily: 'Montserrat',
                         alignItems: 'center',
                         display: 'flex',
                         height: '25px',
@@ -625,7 +613,6 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                     value={pontuacaoMaxima}
                     sx={{
                       '.MuiFormLabel-root': {
-                        fontFamily: 'Montserrat',
                         alignItems: 'center',
                         display: 'flex',
                         height: '25px',
