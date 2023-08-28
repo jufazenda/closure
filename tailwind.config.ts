@@ -9,8 +9,22 @@ const config: Config = {
   theme: {
     extend: {
       maxHeight: {
-        '100': '100px', 
-        '450': '500px', 
+        '50': '50px',
+        '100': '100px',
+        '450': '450px',
+        '500': '500px',
+        '800': '800px',
+        '1000': '1000px',
+        '80%': '80%',
+      },
+      maxWidth: {
+        '50': '50px',
+        '170': '150px',
+        '450': '450px',
+        '500': '500px',
+        '800': '800px',
+        '1000': '1000px',
+        '80%': '80%',
       },
       colors: {
         white: '#ffffff',
@@ -30,6 +44,23 @@ const config: Config = {
         'padrao-purple-500': 'rgba(151, 71, 255, 0.5)',
         'padrao-blue-500': 'rgba(41, 171, 227, 0.5)',
         'padrao-green-500': 'rgba(31, 170, 77, 0.5)',
+      },
+      spacing: {
+        'custom-right': '-500px',
+      },
+      typography: {
+        'underline-offset': {
+          css: {
+            'text-underline-offset': '2em',
+          },
+        },
+      },
+      screens: {
+        sm: '640px',
+        md: '900px',
+        lg: '1200px',
+        xl: '1500px',
+        '2xl': '2000px',
       },
     },
   },
