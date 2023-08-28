@@ -48,7 +48,7 @@ const Home = () => {
       .order('numero_tarefa')
 
     if (error) {
-      console.error('Erro ao buscar dados:', error.message)
+      console.error('Erro ao buscar dados tarefas:', error.message)
       return
     }
     setAllTarefas(data)
