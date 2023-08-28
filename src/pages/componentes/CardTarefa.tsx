@@ -31,7 +31,6 @@ interface ModalComponents {
 }
 
 import { Tomorrow } from 'next/font/google'
-import EditarTarefa from './EditarTarefaModal'
 import AdicionarTarefa from './AdicionarTarefaModal'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
@@ -65,7 +64,7 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
   }
 
   const ajustarHorario = () => {
-    const partesHorario = tarefas.horario?.split(':')
+    const partesHorario = tarefas?.horario?.split(':')
 
     let horarioCorreto: string = ''
 
@@ -114,7 +113,7 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
           loading={loading}
           setLoading={setLoading}
           isEditing
-          idTarefa={tarefas.id}
+          idTarefa={tarefas?.id}
           setorTarefa={
             allSetores?.id === tarefas?.id_setor ? allSetores : null
           }
@@ -135,13 +134,13 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
         >
           <div className='flex m-2 justify-between h-full'>
             <div className='my-4 mx-2'>
-              <span className='flex max-w-170'>{tarefas.tarefa}</span>
+              <span className='flex max-w-170'>{tarefas?.tarefa}</span>
             </div>
             <div className='flex justify-between flex-col h-full items-end'>
               <span className={`${tomorrow.className} flex`}>
-                {tarefas.numero_tarefa}
+                {tarefas?.numero_tarefa}
               </span>
-              <span>{horario ? horario : `Lote ${tarefas.id_lote}`}</span>
+              <span>{horario ? horario : `Lote ${tarefas?.id_lote}`}</span>
             </div>
           </div>
 
