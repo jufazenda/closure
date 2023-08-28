@@ -95,7 +95,7 @@ const Modal: FC<PropsModal> = ({
             <Button
               color='primary'
               variant='contained'
-              className={`bg-black hover:${getColorClass()} hover:text-white`}
+              className={`bg-black hover:${getColorClass()} !important hover:text-white`}
               onClick={onClickButton}
               startIcon={buttonIcon}
             >
