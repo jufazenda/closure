@@ -80,7 +80,7 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
   }
 
   const getColorClass = () => {
-    switch (tarefas.id_setor) {
+    switch (tarefas?.id_setor) {
       case 1:
         return 'bg-padrao-orange-500 hover:bg-padrao-orange-300'
       case 2:
@@ -158,7 +158,4 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
   )
 }
 
-{
-  /* */
-}
 export default CardTarefa
