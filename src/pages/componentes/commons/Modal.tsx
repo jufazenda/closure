@@ -46,21 +46,21 @@ const Modal: FC<PropsModal> = ({
   const getColorClass = () => {
     switch (setor) {
       case 1:
-        return 'hover:bg-padrao-orange-300'
+        return 'bg-padrao-orange-300'
       case 2:
-        return 'hover:bg-padrao-yellow-300'
+        return 'bg-padrao-yellow-300'
       case 3:
-        return 'hover:bg-padrao-pink-300'
+        return 'bg-padrao-pink-300'
       case 4:
-        return 'hover:bg-padrao-blue-300'
+        return 'bg-padrao-blue-300'
       case 5:
-        return 'hover:bg-padrao-green-300'
+        return 'bg-padrao-green-300'
       case 6:
-        return 'hover:bg-padrao-purple-300'
+        return 'bg-padrao-purple-300'
       case 7:
-        return 'hover:bg-padrao-red-300'
+        return 'bg-padrao-red-300'
       default:
-        return 'hover:bg-gray-600'
+        return 'bg-gray-600'
     }
   }
 
@@ -95,7 +95,7 @@ const Modal: FC<PropsModal> = ({
             <Button
               color='primary'
               variant='contained'
-              className={`bg-black ${getColorClass()} hover:text-white`}
+              className={`bg-black hover:${getColorClass()} hover:text-white`}
               onClick={onClickButton}
               startIcon={buttonIcon}
             >
