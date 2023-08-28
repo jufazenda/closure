@@ -106,9 +106,11 @@ const Notification = ({
 
   return (
     <div
-      className={`absolute top-20 z-50 right-custom-right 
+      className={`absolute top-20 z-50  ${
+        isVisible ? 'right-20' : 'right-custom-right '
+      } 
       rounded-xl flex justify-center items-center ${corBox} w-96 shadow-md transition-right duration-1000 ease-in-out p-5
-       ${isVisible && 'right-20'} `}
+      `}
       onClick={closeNotification}
     >
       {icone && icone}

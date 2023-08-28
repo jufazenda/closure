@@ -73,8 +73,6 @@ const Home = () => {
     return components[modalName]
   }
 
-  console.log(allTarefas)
-
   return (
     <>
       <Head>
