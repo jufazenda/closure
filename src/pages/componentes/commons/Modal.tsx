@@ -66,12 +66,11 @@ const Modal: FC<PropsModal> = ({
   return (
     <ThemeProvider theme={theme}>
       <div
-        className='flex fixed top-0 left-0 w-full h-full
-         bg-black-shadow justify-center items-center'
+        className='flex fixed top-0 left-0 w-full h-full bg-black-shadow justify-center items-center overflow-auto'
         onClick={onClose}
       >
         <div
-          className='bg-white rounded m-3 shadow w-3/4 md:w-1/2'
+          className='bg-white rounded m-10 shadow w-3/4 md:w-1/2 max-h-450 md:max-h-80% overflow-auto'
           onClick={e => e.stopPropagation()}
         >
           <header className='flex p-8 items-center border-b-2 gap-4'>
@@ -80,12 +79,16 @@ const Modal: FC<PropsModal> = ({
               {title}
             </span>
           </header>
-          <section className='px-10 py-8 overflow-auto max-h-450 md:h-full'>
-            {children}
-          </section>
+          <section className='px-10 pt-8 pb-0 md:h-full'>{children}</section>
           <footer
-            className={`${tomorrow.className} flex p-10 justify-end gap-5`}
+            className={`${tomorrow.className} flex p-10 justify-end gap-10 items-center`}
           >
+            <span
+              onClick={onClose}
+              className='cursor-pointer hover:-webkit-text-stroke-[0.2px] hover:underline text-xs'
+            >
+              CANCELAR
+            </span>
             <Button
               color='primary'
               variant='contained'
