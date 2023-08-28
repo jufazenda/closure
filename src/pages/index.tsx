@@ -72,7 +72,9 @@ const Home = () => {
     }
     return components[modalName]
   }
-  
+
+  console.log(allTarefas)
+
   return (
     <>
       <Head>
@@ -100,7 +102,7 @@ const Home = () => {
           </div>
 
           <div className='flex justify-center items-center w-full flex-col md:flex-row'>
-            {allTarefas ? (
+            {allTarefas.length ? (
               <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 gap-10 '>
                 {allTarefas.map(tarefas => (
                   <CardTarefa
