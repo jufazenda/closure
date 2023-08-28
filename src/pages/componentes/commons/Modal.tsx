@@ -63,6 +63,7 @@ const Modal: FC<PropsModal> = ({
         return 'hover:bg-gray-600'
     }
   }
+
   return (
     <ThemeProvider theme={theme}>
       <div
@@ -79,7 +80,9 @@ const Modal: FC<PropsModal> = ({
               {title}
             </span>
           </header>
-          <section className='px-10 pt-8 pb-0 md:h-full'>{children}</section>
+          <section className='px-10 pt-8 pb-0 md:h-full'>
+            {children}
+          </section>
           <footer
             className={`${tomorrow.className} flex p-10 justify-end gap-10 items-center`}
           >
