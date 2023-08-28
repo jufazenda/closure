@@ -64,7 +64,7 @@ const Modal: FC<PropsModal> = ({
     }
   }
 
-  console.log(getColorClass)
+  console.log(getColorClass())
 
   return (
     <ThemeProvider theme={theme}>
