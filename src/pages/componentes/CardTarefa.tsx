@@ -58,7 +58,7 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
       return
     } else {
       const setorTarefa = data.find(
-        setores => setores.id === tarefas.id_setor
+        setores => setores?.id === tarefas?.id_setor
       )
       setAllSetores(setorTarefa)
     }
@@ -116,7 +116,7 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
           isEditing
           idTarefa={tarefas.id}
           setorTarefa={
-            allSetores?.id === tarefas.id_setor ? allSetores : null
+            allSetores?.id === tarefas?.id_setor ? allSetores : null
           }
         />
       ),
