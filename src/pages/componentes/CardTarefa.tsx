@@ -66,8 +66,6 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
   const ajustarHorario = () => {
     const partesHorario = tarefas?.horario?.split(':')
 
-    let horarioCorreto: string = ''
-
     if (partesHorario) {
       const hora = partesHorario[0]
       const minuto = partesHorario[1]
@@ -132,11 +130,11 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
         <div
           className={`${getColorClass()} w-64 h-40 flex text-black rounded-lg flex-col cursor-pointer`}
         >
-          <div className='flex m-2 justify-between h-full'>
-            <div className='my-4 mx-2'>
+          <div className='flex justify-between h-full m-2'>
+            <div className='mx-2 my-4'>
               <span className='flex max-w-170'>{tarefas?.tarefa}</span>
             </div>
-            <div className='flex justify-between flex-col h-full items-end'>
+            <div className='flex flex-col items-end justify-between h-full'>
               <span className={`${tomorrow.className} flex`}>
                 {tarefas?.numero_tarefa}
               </span>
@@ -144,8 +142,8 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
             </div>
           </div>
 
-          <div className=' justify-end  items-end'>
-            <hr className='border-t-2 border-black justify-end  items-end' />
+          <div className='items-end justify-end '>
+            <hr className='items-end justify-end border-t-2 border-black' />
             <span className={`${tomorrow.className} m-2`}>
               {allSetores?.setor}
             </span>
