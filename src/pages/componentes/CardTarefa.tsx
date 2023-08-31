@@ -13,6 +13,7 @@ interface PropsTarefas {
   numero_tarefa: number
   id_lote: number | null
   id_setor: number
+  pontuacaoMaxima: number
   pontuacaoPrimeiro: number
   pontuacaoSegundo: number
   pontuacaoTerceiro: number
@@ -32,6 +33,7 @@ interface ModalComponents {
 
 import { Tomorrow } from 'next/font/google'
 import AdicionarTarefa from './AdicionarTarefaModal'
+import TarefasModal from './TarefasModal'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 
@@ -104,17 +106,15 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
 
   const chooseModal = (modalName: string) => {
     const components: ModalComponents = {
-      Editar: (
-        <AdicionarTarefa
+      Informacoes: (
+        <TarefasModal
+          key={tarefas.id}
+          tarefas={tarefas}
           activeModal={activeModal}
           setActiveModal={setActiveModal}
           loading={loading}
           setLoading={setLoading}
-          isEditing
           idTarefa={tarefas?.id}
-          setorTarefa={
-            allSetores?.id === tarefas?.id_setor ? allSetores : null
-          }
         />
       ),
     }
@@ -125,7 +125,7 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
     <div>
       <span
         className='flex cursor-pointer'
-        onClick={() => openModal('Editar')}
+        onClick={() => openModal('Informacoes')}
       >
         <div
           className={`${getColorClass()} w-64 h-40 flex text-black rounded-lg flex-col cursor-pointer`}

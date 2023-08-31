@@ -100,18 +100,6 @@ const Home = () => {
               </button>
             </div>
           </div>
-          <div>
-            {allTarefas.map(tarefas => (
-              <TarefasModal
-                key={tarefas.id}
-                tarefas={tarefas}
-                activeModal={activeModal}
-                setActiveModal={setActiveModal}
-                loading={loading}
-                setLoading={setLoading}
-              />
-            ))}
-          </div>
 
           <div className='flex flex-col items-center justify-center w-full md:flex-row'>
             {allTarefas.length ? (

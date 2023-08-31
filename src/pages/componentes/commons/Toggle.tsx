@@ -1,11 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-const Toggle = () => {
+interface PropsToggle {
+  setTarefaCumprida: (value: boolean) => void
+}
+
+const Toggle = ({ setTarefaCumprida }: PropsToggle) => {
   const [isChecked, setIsChecked] = useState(false)
 
   const toggleHandler = () => {
     setIsChecked(!isChecked)
   }
+
+  useEffect(() => {
+    setTarefaCumprida(isChecked)
+  }, [isChecked, setTarefaCumprida])
 
   return (
     <div className='flex items-center'>
