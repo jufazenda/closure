@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import { Tomorrow } from 'next/font/google'
 import {
   Autocomplete,
+  Button,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -17,6 +18,7 @@ import {
 import Image from 'next/image'
 import Toggle from './commons/Toggle'
 import supabase from '../api/supabase'
+import Notification from './commons/Notification'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 
@@ -41,6 +43,7 @@ interface PropsTarefas {
   pontuacaoTerceiro: number
   pontuacaoQuarto: number
   horario: string
+  observacao?: string
 }
 
 interface PropsColocacao {
@@ -142,10 +145,89 @@ const TarefasModal = ({
   const [respostaCharada, setRespostaCharada] = useState<string>('')
   const [observacao, setObservacao] = useState<string>('')
   const [resultadoById, setResultadoById] = useState<PropsResultado[]>([])
+  const [horarioPadrao, setHorarioPadrao] = useState<string>('')
+
+  const [notificationProps, setNotificationProps] = useState({
+    importantMessage: '',
+    message: '',
+    setShowNotification: false,
+    type: 0,
+  })
+
+  const [opcoesColocacao, setOpcoesColocacao] = useState<PropsColocacao[]>(
+    []
+  )
 
   const closeModal = () => {
     setActiveModal(false)
   }
+
+  const onClickButton = async () => {
+    const { data, error } = await supabase
+      .from('Resultado')
+      .update({
+        forcask: forcask,
+        aguia: aguia,
+        poupanca: poupanca,
+        medonhos: medonhos,
+      })
+      .eq('id_tarefa', idTarefa)
+
+    if (error) {
+      console.error('Erro ao buscar dados setores:', error.message)
+      return
+    }
+    salvarInfos()
+    salvarResultadoSK()
+    salvarResultadoAguia()
+    salvarResultadPoups()
+    salvarResultadoMed()
+
+    setNotificationProps({
+      importantMessage: 'Sucesso!',
+      message: 'Resultado registrado.',
+      setShowNotification: true,
+      type: 1,
+    })
+  }
+
+  const buscaTarefa = async () => {
+    const { data, error } = await supabase
+      .from('Tarefas')
+      .select('*')
+      .eq('id', idTarefa)
+      .single()
+
+    if (error) {
+      console.error('Erro ao buscar observação:', error.message)
+      return
+    }
+
+    if (data) {
+      setObservacao(data.observacao || '')
+      setRespostaCharada(data.respostaCharada || '')
+    }
+  }
+
+  const buscaColocacao = async () => {
+    const { data, error } = await supabase
+      .from('Colocacao')
+      .select('*')
+      .order('id')
+
+    if (error) {
+      console.error('Erro ao buscar colocacao:', error.message)
+      return
+    }
+
+    if (data) {
+      setOpcoesColocacao(data)
+    }
+  }
+
+  console.log(aguiaColocacao)
+  console.log(opcoesColocacao)
+
 
   const salvarInfos = async () => {
     const { data, error } = await supabase
@@ -161,36 +243,153 @@ const TarefasModal = ({
     }
   }
 
-  const salvarResultado = async () => {
-    const { data, error } = await supabase.from('Resultado').insert([
-      {
-        forcask: forcask,
-        aguia: aguia,
-        poupanca: poupanca,
-        medonhos: medonhos,
-        id_tarefa: idTarefa,
-      },
-    ])
-
+  const salvarResultadoSK = async () => {
+    const { data, error } = await supabase
+      .from('ForcaSK')
+      .update({
+        colocacao: forcaskColocacao?.id,
+        tarefaCumprida: tarefas.pontuacaoMaxima ? tarefaCumpridaSK : null,
+        bonificacao: bonificacaoSK,
+      })
+      .eq('id_tarefa', idTarefa)
     if (error) {
       console.error('Erro ao buscar dados setores:', error.message)
       return
     }
   }
 
-  const buscarResultado = async () => {
+  const salvarResultadoAguia = async () => {
     const { data, error } = await supabase
-      .from('Resultado')
-      .select('*')
-      .order('created_at')
-      .eq('id', idTarefa)
-
+      .from('AguiaDeFogo')
+      .update({
+        colocacao: aguiaColocacao?.id,
+        tarefaCumprida: tarefas.pontuacaoMaxima
+          ? tarefaCumpridaAguia
+          : null,
+        bonificacao: bonificacaoAguia,
+      })
+      .eq('id_tarefa', idTarefa)
     if (error) {
       console.error('Erro ao buscar dados setores:', error.message)
       return
     }
+  }
 
-    setResultadoById(data)
+  const salvarResultadPoups = async () => {
+    const { data, error } = await supabase
+      .from('Poupanca')
+      .update({
+        colocacao: poupancaColocacao?.id,
+        tarefaCumprida: tarefas.pontuacaoMaxima
+          ? tarefaCumpridaPoups
+          : null,
+        bonificacao: bonificacaoPoups,
+      })
+      .eq('id_tarefa', idTarefa)
+    if (error) {
+      console.error('Erro ao buscar dados setores:', error.message)
+      return
+    }
+  }
+
+  const salvarResultadoMed = async () => {
+    const { data, error } = await supabase
+      .from('Medonhos')
+      .update({
+        colocacao: medonhosColocacao?.id,
+        tarefaCumprida: tarefas.pontuacaoMaxima ? tarefaCumpridaMed : null,
+        bonificacao: bonificacaoMedonhos,
+      })
+      .eq('id_tarefa', idTarefa)
+    if (error) {
+      console.error('Erro ao buscar dados setores:', error.message)
+      return
+    }
+  }
+
+  const buscarResultadoSK = async () => {
+    const { data, error } = await supabase
+      .from('ForcaSK')
+      .select('*')
+      .eq('id_tarefa', idTarefa)
+      .single()
+
+    if (error) {
+      console.error('Erro ao buscar observação:', error.message)
+      return
+    }
+
+    if (data) {
+      setForcaskColocacao(data.colocacao) // ajustar aqui
+      setTarefaCumpridaSK(data.tarefaCumprida || false)
+      setBonificacaoSK(data.bonificacao || '')
+    }
+  }
+
+  const buscarResultadoAguia = async () => {
+    const { data, error } = await supabase
+      .from('AguiaDeFogo')
+      .update({
+        colocacao: aguiaColocacao?.id,
+        tarefaCumprida: tarefas.pontuacaoMaxima
+          ? tarefaCumpridaAguia
+          : null,
+        bonificacao: bonificacaoAguia,
+      })
+      .eq('id_tarefa', idTarefa)
+    if (error) {
+      console.error('Erro ao buscar dados setores:', error.message)
+      return
+    }
+  }
+
+  const buscarResultadPoups = async () => {
+    const { data, error } = await supabase
+      .from('Poupanca')
+      .update({
+        colocacao: poupancaColocacao?.id,
+        tarefaCumprida: tarefas.pontuacaoMaxima
+          ? tarefaCumpridaPoups
+          : null,
+        bonificacao: bonificacaoPoups,
+      })
+      .eq('id_tarefa', idTarefa)
+    if (error) {
+      console.error('Erro ao buscar dados setores:', error.message)
+      return
+    }
+  }
+
+  const buscarResultadoMed = async () => {
+    const { data, error } = await supabase
+      .from('Medonhos')
+      .update({
+        colocacao: medonhosColocacao?.id,
+        tarefaCumprida: tarefas.pontuacaoMaxima ? tarefaCumpridaMed : null,
+        bonificacao: bonificacaoMedonhos,
+      })
+      .eq('id_tarefa', idTarefa)
+    if (error) {
+      console.error('Erro ao buscar dados setores:', error.message)
+      return
+    }
+  }
+
+  const ajustarHorario = () => {
+    const partesHorario = tarefas?.horario?.split(':')
+
+    if (partesHorario) {
+      const hora = partesHorario[0]
+      const minuto = partesHorario[1]
+
+      setHorarioPadrao(`${hora}:${minuto}`)
+    } else {
+      setHorarioPadrao('')
+    }
+  }
+
+  const ajustarNumero = () => {
+    return String(tarefas?.numero_tarefa).padStart(3, '0')
   }
 
   useEffect(() => {
@@ -209,14 +408,18 @@ const TarefasModal = ({
     medonhosColocacao,
     poupancaColocacao,
   ])
-  useEffect(() => {
-    salvarInfos()
-  }, [respostaCharada, observacao])
 
   useEffect(() => {
-    buscarResultado()
-    salvarResultado()
-  }, [forcask, aguia, poupanca, medonhos])
+    ajustarHorario()
+    buscaColocacao()
+  }, [])
+
+  useEffect(() => {
+    if (activeModal && idTarefa) {
+      buscaTarefa()
+      buscarResultadoSK()
+    }
+  }, [activeModal, idTarefa])
 
   const calculandoResultado = () => {
     if (tarefas.pontuacaoMaxima) {
@@ -346,14 +549,6 @@ const TarefasModal = ({
     }
   }
 
-  const opcoesColocacao = [
-    { id: 1, label: '1º lugar' },
-    { id: 2, label: '2º lugar' },
-    { id: 3, label: '3º lugar' },
-    { id: 4, label: '4º lugar' },
-    { id: 5, label: 'Zerou' },
-  ]
-
   const getColorClass500 = () => {
     switch (tarefas?.id_setor) {
       case 1:
@@ -416,14 +611,14 @@ const TarefasModal = ({
                 {tarefas.tarefa}
               </span>
               <span className={`${tomorrow.className} text-2xl flex`}>
-                {tarefas.numero_tarefa}
+                {ajustarNumero()}
               </span>
             </div>
-            <div className='flex flex-col justify-between w-full md:flex-row'>
+            <div className='flex flex-col justify-between w-full items-center md:flex-row'>
               <span className={`${tomorrow.className} text-lg flex`}>
                 {tarefas.id_lote
                   ? `Lote ${tarefas.id_lote} `
-                  : tarefas.horario}
+                  : horarioPadrao}
               </span>
               <div>
                 <span className={`${tomorrow.className} text-md flex`}>
@@ -461,6 +656,7 @@ const TarefasModal = ({
                   <div>
                     <BlackTextField
                       type='String'
+                      value={respostaCharada}
                       onChange={event => {
                         setRespostaCharada(event.target.value)
                       }}
@@ -889,6 +1085,7 @@ const TarefasModal = ({
                   type='String'
                   multiline
                   rows={3}
+                  value={observacao}
                   onChange={event => {
                     setObservacao(event.target.value)
                   }}
@@ -907,38 +1104,42 @@ const TarefasModal = ({
                 />
               </span>
             </div>
-            <div className='flex flex-col w-full gap-5 my-5 md:flex-col'></div>
           </section>
+          <footer
+            className={`${tomorrow.className} flex p-10 justify-end gap-10 items-center`}
+          >
+            <span
+              onClick={closeModal}
+              className='cursor-pointer hover:-webkit-text-stroke-[0.2px] hover:underline text-xs'
+            >
+              CANCELAR
+            </span>
+            <Button
+              variant='contained'
+              className={`bg-black hover:${getColorClass300()} hover:text-white`}
+              onClick={onClickButton}
+            >
+              Salvar
+            </Button>
+          </footer>
         </div>
+        {/* PopUp */}
+        {notificationProps.setShowNotification && (
+          <Notification
+            importantMessage={notificationProps.importantMessage}
+            message={notificationProps.message}
+            setShowNotification={() =>
+              setNotificationProps(prevProps => ({
+                ...prevProps,
+                setShowNotification: false,
+              }))
+            }
+            type={notificationProps.type}
+          />
+        )}
       </div>
     </ThemeProvider>
   )
 }
 
 export default TarefasModal
-
-{
-  /* <div className='row-1'>
-              <div className='tarefa'>
-                <BlackTextField
-                  type='String'
-                  multiline
-                  rows={2}
-                  onChange={event => {
-                    setActionText(event.target.value)
-                  }}
-                  sx={{
-                    '.MuiFormLabel-root': {
-                      fontFamily: 'Montserrat',
-                      alignItems: 'center',
-                      display: 'flex',
-                      height: '25px',
-                      color: 'black',
-                      fontWeight: 600,
-                    },
-                  }}
-                  label='Observação'
-                />
-              </div>
-            </div>*/
-}

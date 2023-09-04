@@ -78,6 +78,10 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
     }
   }
 
+  const ajustarNumero = () => {
+    return String(tarefas?.numero_tarefa).padStart(3, '0')
+  }
+
   const getColorClass = () => {
     switch (tarefas?.id_setor) {
       case 1:
@@ -128,7 +132,7 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
         onClick={() => openModal('Informacoes')}
       >
         <div
-          className={`${getColorClass()} w-64 h-40 flex text-black rounded-lg flex-col cursor-pointer`}
+          className={`${getColorClass()} w-64 h-44 flex text-black rounded-lg flex-col cursor-pointer`}
         >
           <div className='flex justify-between h-full m-2'>
             <div className='mx-2 my-4'>
@@ -136,7 +140,7 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
             </div>
             <div className='flex flex-col items-end justify-between h-full'>
               <span className={`${tomorrow.className} flex`}>
-                {tarefas?.numero_tarefa}
+                {ajustarNumero()}
               </span>
               <span>{horario ? horario : `Lote ${tarefas?.id_lote}`}</span>
             </div>

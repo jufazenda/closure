@@ -386,7 +386,8 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
             <span className='flex justify-end my-2 text-sm font-semibold '>
               *Selecione o setor para acessar mais informações.
             </span>
-          ) : setor?.setor === 'Esportivas' ? (
+          ) : setor?.setor === 'Esportivas' ||
+            setor?.setor === 'Artísticas' ? (
             <>
               <div className='flex flex-col gap-5 my-5 md:flex-col'>
                 <span className={`${tomorrow.className} text-lg flex`}>
@@ -511,7 +512,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                 </div>
               </div>
             </>
-          ) : setor?.setor === 'Rua' || setor?.setor === 'Artísticas' ? (
+          ) : setor?.setor === 'Rua' ? (
             <div className='flex w-full gap-5'>
               <div className='flex flex-col w-1/2 gap-5 my-5 md:flex-col'>
                 <span className={`${tomorrow.className} text-lg flex`}>
