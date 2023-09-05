@@ -225,10 +225,6 @@ const TarefasModal = ({
     }
   }
 
-  console.log(aguiaColocacao)
-  console.log(opcoesColocacao)
-
-
   const salvarInfos = async () => {
     const { data, error } = await supabase
       .from('Tarefas')
@@ -247,11 +243,12 @@ const TarefasModal = ({
     const { data, error } = await supabase
       .from('ForcaSK')
       .update({
-        colocacao: forcaskColocacao?.id,
+        colocacao: forcaskColocacao?.id || null,
         tarefaCumprida: tarefas.pontuacaoMaxima ? tarefaCumpridaSK : null,
-        bonificacao: bonificacaoSK,
+        bonificacao: Number(bonificacaoSK),
       })
       .eq('id_tarefa', idTarefa)
+
     if (error) {
       console.error('Erro ao buscar dados setores:', error.message)
       return
@@ -262,11 +259,11 @@ const TarefasModal = ({
     const { data, error } = await supabase
       .from('AguiaDeFogo')
       .update({
-        colocacao: aguiaColocacao?.id,
+        colocacao: aguiaColocacao?.id || null,
         tarefaCumprida: tarefas.pontuacaoMaxima
           ? tarefaCumpridaAguia
           : null,
-        bonificacao: bonificacaoAguia,
+        bonificacao: Number(bonificacaoAguia),
       })
       .eq('id_tarefa', idTarefa)
     if (error) {
@@ -279,11 +276,11 @@ const TarefasModal = ({
     const { data, error } = await supabase
       .from('Poupanca')
       .update({
-        colocacao: poupancaColocacao?.id,
+        colocacao: poupancaColocacao?.id || null,
         tarefaCumprida: tarefas.pontuacaoMaxima
           ? tarefaCumpridaPoups
           : null,
-        bonificacao: bonificacaoPoups,
+        bonificacao: Number(bonificacaoPoups),
       })
       .eq('id_tarefa', idTarefa)
     if (error) {
@@ -296,9 +293,9 @@ const TarefasModal = ({
     const { data, error } = await supabase
       .from('Medonhos')
       .update({
-        colocacao: medonhosColocacao?.id,
+        colocacao: medonhosColocacao?.id || null,
         tarefaCumprida: tarefas.pontuacaoMaxima ? tarefaCumpridaMed : null,
-        bonificacao: bonificacaoMedonhos,
+        bonificacao: Number(bonificacaoMedonhos),
       })
       .eq('id_tarefa', idTarefa)
     if (error) {
@@ -320,7 +317,14 @@ const TarefasModal = ({
     }
 
     if (data) {
-      setForcaskColocacao(data.colocacao) // ajustar aqui
+      const findColocacao = opcoesColocacao?.find(
+        colocacao => colocacao.id === data.colocacao
+      )
+
+      if (findColocacao) {
+        setForcaskColocacao(findColocacao)
+      }
+
       setTarefaCumpridaSK(data.tarefaCumprida || false)
       setBonificacaoSK(data.bonificacao || '')
     }
@@ -329,49 +333,78 @@ const TarefasModal = ({
   const buscarResultadoAguia = async () => {
     const { data, error } = await supabase
       .from('AguiaDeFogo')
-      .update({
-        colocacao: aguiaColocacao?.id,
-        tarefaCumprida: tarefas.pontuacaoMaxima
-          ? tarefaCumpridaAguia
-          : null,
-        bonificacao: bonificacaoAguia,
-      })
+      .select('*')
       .eq('id_tarefa', idTarefa)
+      .single()
+
     if (error) {
-      console.error('Erro ao buscar dados setores:', error.message)
+      console.error('Erro ao buscar observação:', error.message)
       return
+    }
+
+    if (data) {
+      const findColocacao = opcoesColocacao?.find(
+        colocacao => colocacao.id === data.colocacao
+      )
+
+      if (findColocacao) {
+        setAguiaColocacao(findColocacao)
+      }
+
+      setTarefaCumpridaAguia(data.tarefaCumprida || false)
+      setBonificacaoAguia(data.bonificacao || '')
     }
   }
 
   const buscarResultadPoups = async () => {
     const { data, error } = await supabase
       .from('Poupanca')
-      .update({
-        colocacao: poupancaColocacao?.id,
-        tarefaCumprida: tarefas.pontuacaoMaxima
-          ? tarefaCumpridaPoups
-          : null,
-        bonificacao: bonificacaoPoups,
-      })
+      .select('*')
       .eq('id_tarefa', idTarefa)
+      .single()
+
     if (error) {
-      console.error('Erro ao buscar dados setores:', error.message)
+      console.error('Erro ao buscar observação:', error.message)
       return
+    }
+
+    if (data) {
+      const findColocacao = opcoesColocacao?.find(
+        colocacao => colocacao.id === data.colocacao
+      )
+
+      if (findColocacao) {
+        setPoupancaColocacao(findColocacao)
+      }
+
+      setTarefaCumpridaPoups(data.tarefaCumprida || false)
+      setBonificacaoPoups(data.bonificacao || '')
     }
   }
 
   const buscarResultadoMed = async () => {
     const { data, error } = await supabase
       .from('Medonhos')
-      .update({
-        colocacao: medonhosColocacao?.id,
-        tarefaCumprida: tarefas.pontuacaoMaxima ? tarefaCumpridaMed : null,
-        bonificacao: bonificacaoMedonhos,
-      })
+      .select('*')
       .eq('id_tarefa', idTarefa)
+      .single()
+
     if (error) {
-      console.error('Erro ao buscar dados setores:', error.message)
+      console.error('Erro ao buscar observação:', error.message)
       return
+    }
+
+    if (data) {
+      const findColocacao = opcoesColocacao?.find(
+        colocacao => colocacao.id === data.colocacao
+      )
+
+      if (findColocacao) {
+        setMedonhosColocacao(findColocacao)
+      }
+
+      setTarefaCumpridaMed(data.tarefaCumprida || false)
+      setBonificacaoMedonhos(data.bonificacao || '')
     }
   }
 
@@ -410,16 +443,23 @@ const TarefasModal = ({
   ])
 
   useEffect(() => {
-    ajustarHorario()
-    buscaColocacao()
-  }, [])
+    const fetchData = async () => {
+      if (activeModal && idTarefa) {
+        await buscaTarefa()
+        await buscaColocacao()
+        ajustarHorario()
+      }
+    }
+
+    fetchData()
+  }, [activeModal, idTarefa])
 
   useEffect(() => {
-    if (activeModal && idTarefa) {
-      buscaTarefa()
-      buscarResultadoSK()
-    }
-  }, [activeModal, idTarefa])
+    buscarResultadoSK()
+    buscarResultadoAguia()
+    buscarResultadoMed()
+    buscarResultadPoups()
+  }, [opcoesColocacao])
 
   const calculandoResultado = () => {
     if (tarefas.pontuacaoMaxima) {
@@ -591,6 +631,8 @@ const TarefasModal = ({
     }
   }
 
+  console.log(aguiaColocacao)
+
   return (
     <ThemeProvider theme={theme}>
       <div
@@ -686,7 +728,10 @@ const TarefasModal = ({
                         height={100}
                         priority
                       />
-                      <Toggle setTarefaCumprida={setTarefaCumpridaSK} />
+                      <Toggle
+                        setTarefaCumprida={setTarefaCumpridaSK}
+                        tarefaCumprida={tarefaCumpridaSK}
+                      />
                       <BlackTextField
                         type='number'
                         inputProps={{ min: 0 }}
@@ -715,7 +760,10 @@ const TarefasModal = ({
                         height={100}
                         priority
                       />
-                      <Toggle setTarefaCumprida={setTarefaCumpridaAguia} />
+                      <Toggle
+                        setTarefaCumprida={setTarefaCumpridaAguia}
+                        tarefaCumprida={tarefaCumpridaAguia}
+                      />
                       <BlackTextField
                         type='number'
                         inputProps={{ min: 0 }}
@@ -744,7 +792,10 @@ const TarefasModal = ({
                         height={100}
                         priority
                       />
-                      <Toggle setTarefaCumprida={setTarefaCumpridaPoups} />
+                      <Toggle
+                        setTarefaCumprida={setTarefaCumpridaPoups}
+                        tarefaCumprida={tarefaCumpridaPoups}
+                      />
                       <BlackTextField
                         type='number'
                         inputProps={{ min: 0 }}
@@ -773,7 +824,10 @@ const TarefasModal = ({
                         height={100}
                         priority
                       />
-                      <Toggle setTarefaCumprida={setTarefaCumpridaMed} />
+                      <Toggle
+                        setTarefaCumprida={setTarefaCumpridaMed}
+                        tarefaCumprida={tarefaCumpridaMed}
+                      />
                       <BlackTextField
                         type='number'
                         inputProps={{ min: 0 }}
