@@ -1,27 +1,27 @@
 'use client'
 
-import React, { useState, ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import { Button } from '@mui/material'
 
 import { FC } from 'react'
 
-import { ThemeProvider, createTheme, styled } from '@mui/material/styles'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { Tomorrow } from 'next/font/google'
-import { blue } from '@mui/material/colors'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 
 interface PropsModal {
   title: string
   subtitle?: string
-  icon: ReactNode
+  icon?: ReactNode
   buttonIcon?: JSX.Element | null
-  buttonLabel: string
+  buttonLabel?: string
   isOpen: boolean
   onClose: () => void
   children: ReactNode
   setor?: number | null
-  onClickButton: () => void
+  onClickButton?: () => void
+  isEditing?: boolean
 }
 
 const theme = createTheme({
@@ -43,6 +43,7 @@ const Modal: FC<PropsModal> = ({
   onClickButton,
   setor,
   children,
+  isEditing,
 }) => {
   const getColorClass = () => {
     switch (setor) {
@@ -68,14 +69,16 @@ const Modal: FC<PropsModal> = ({
   return (
     <ThemeProvider theme={theme}>
       <div
-        className='flex fixed top-0 left-0 w-full h-full bg-black-shadow justify-center items-center overflow-auto'
+        className={`fixed left-0 flex items-center justify-center w-full h-full overflow-auto bg-black-shadow ${
+          isEditing ? 'top-12' : 'top-0'
+        }`}
         onClick={onClose}
       >
         <div
-          className='bg-white rounded m-10 shadow w-3/4 md:w-1/2 max-h-450 md:max-h-80% overflow-auto'
+          className='bg-white rounded-2xl m-10 shadow w-3/4 md:w-1/2 max-h-450 md:max-h-80% overflow-auto'
           onClick={e => e.stopPropagation()}
         >
-          <header className='flex p-8 items-center border-b-2 gap-4'>
+          <header className='flex items-center gap-4 p-8 border-b-2'>
             <div>{icon}</div>
             <span className={`${tomorrow.className} text-xl flex`}>
               {title}

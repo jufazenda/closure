@@ -2,6 +2,9 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import supabase from '../api/supabase'
 
+import { Tomorrow } from 'next/font/google'
+import TarefasModal from './TarefasModal'
+
 interface PropsCardTarefa {
   tarefas: PropsTarefas
   loading: boolean
@@ -13,6 +16,7 @@ interface PropsTarefas {
   numero_tarefa: number
   id_lote: number | null
   id_setor: number
+  pontuacaoMaxima: number
   pontuacaoPrimeiro: number
   pontuacaoSegundo: number
   pontuacaoTerceiro: number
@@ -29,9 +33,6 @@ interface PropsSetores {
 interface ModalComponents {
   [key: string]: JSX.Element
 }
-
-import { Tomorrow } from 'next/font/google'
-import AdicionarTarefa from './AdicionarTarefaModal'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 
@@ -66,8 +67,6 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
   const ajustarHorario = () => {
     const partesHorario = tarefas?.horario?.split(':')
 
-    let horarioCorreto: string = ''
-
     if (partesHorario) {
       const hora = partesHorario[0]
       const minuto = partesHorario[1]
@@ -76,6 +75,10 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
     } else {
       setHorario('')
     }
+  }
+
+  const ajustarNumero = () => {
+    return String(tarefas?.numero_tarefa).padStart(3, '0')
   }
 
   const getColorClass = () => {
@@ -106,17 +109,16 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
 
   const chooseModal = (modalName: string) => {
     const components: ModalComponents = {
-      Editar: (
-        <AdicionarTarefa
+      Informacoes: (
+        <TarefasModal
+          key={tarefas.id}
+          tarefas={tarefas}
           activeModal={activeModal}
           setActiveModal={setActiveModal}
           loading={loading}
           setLoading={setLoading}
-          isEditing
           idTarefa={tarefas?.id}
-          setorTarefa={
-            allSetores?.id === tarefas?.id_setor ? allSetores : null
-          }
+          allSetores={allSetores}
         />
       ),
     }
@@ -127,25 +129,28 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
     <div>
       <span
         className='flex cursor-pointer'
-        onClick={() => openModal('Editar')}
+        onClick={() => openModal('Informacoes')}
       >
         <div
-          className={`${getColorClass()} w-64 h-40 flex text-black rounded-lg flex-col cursor-pointer`}
+          className={`${getColorClass()} w-64 h-44 flex text-black rounded-lg flex-col cursor-pointer`}
         >
-          <div className='flex m-2 justify-between h-full'>
-            <div className='my-4 mx-2'>
-              <span className='flex max-w-170'>{tarefas?.tarefa}</span>
+          <div className='flex justify-between h-full m-2'>
+            <div className='mx-2 my-4 w-max h-24'>
+              <span className='flex max-w-170 overflow-hidden whitespace-nowrap'>
+                <div className='flex-1 w-full h-full overflow-hidden overflow-ellipsis'>
+                  {tarefas?.tarefa}
+                </div>
+              </span>
             </div>
-            <div className='flex justify-between flex-col h-full items-end'>
+            <div className='flex flex-col items-end justify-between h-full'>
               <span className={`${tomorrow.className} flex`}>
-                {tarefas?.numero_tarefa}
+                {ajustarNumero()}
               </span>
               <span>{horario ? horario : `Lote ${tarefas?.id_lote}`}</span>
             </div>
           </div>
-
-          <div className=' justify-end  items-end'>
-            <hr className='border-t-2 border-black justify-end  items-end' />
+          <div className='items-end justify-end '>
+            <hr className='items-end justify-end border-t-2 border-black' />
             <span className={`${tomorrow.className} m-2`}>
               {allSetores?.setor}
             </span>

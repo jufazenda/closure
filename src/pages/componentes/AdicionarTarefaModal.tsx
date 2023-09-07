@@ -36,6 +36,7 @@ interface PropsTarefas {
   numero_tarefa: number
   id_lote: number | null
   id_setor: number
+  pontuacaoMaxima: number
   pontuacaoPrimeiro: number
   pontuacaoSegundo: number
   pontuacaoTerceiro: number
@@ -83,6 +84,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
   const [allTarefas, setAllTarefas] = useState<PropsTarefas[]>([])
   const [setor, setSetor] = useState<PropsSetores | null>(null)
   const [tarefa, setTarefa] = useState<string>('')
+  const [linkTarefa, setLinkTarefa] = useState<string>('')
   const [numero, setNumero] = useState<number | string>(0)
   const [lote, setLote] = useState<number | string>('')
   const [horario, setHorario] = useState('')
@@ -154,6 +156,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
 
     setTarefaEditar(data)
     setTarefa(data.tarefa)
+    setLinkTarefa(data.link)
     setNumero(data.numero_tarefa)
     setLote(data.id_lote)
     if (setorTarefa) {
@@ -194,6 +197,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
       const { data, error } = await supabase.from('Tarefas').insert([
         {
           tarefa: tarefa,
+          link: linkTarefa,
           numero_tarefa: numero,
           id_lote: lote || null,
           id_setor: setor?.id,
@@ -234,6 +238,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
         .from('Tarefas')
         .update({
           tarefa: tarefa,
+          link: linkTarefa,
           numero_tarefa: numero,
           id_lote: lote || null,
           id_setor: setor?.id,
@@ -286,6 +291,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                 adicionar()
               }
         }
+        isEditing={isEditing && isEditing}
       >
         {/*  tarefas e numero*/}
         <div className='flex flex-col gap-5 md:flex-row'>
@@ -310,6 +316,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
               label='Tarefa'
             />
           </div>
+
           <div className='w-full md:w-3/12 '>
             <BlackTextField
               required
@@ -333,7 +340,28 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
           </div>
         </div>
 
-        <div className='flex md:flex-row my-5'>
+        {/*  setor*/}
+        <div className='flex my-5 md:flex-col gap-5'>
+          <div className='w-full md:w-full'>
+            <BlackTextField
+              type='String'
+              onChange={event => {
+                setLinkTarefa(event.target.value)
+              }}
+              value={linkTarefa}
+              sx={{
+                '.MuiFormLabel-root': {
+                  alignItems: 'center',
+                  display: 'flex',
+                  height: '25px',
+                  color: 'black',
+                  fontWeight: 600,
+                },
+                width: '100%',
+              }}
+              label='Link da Tarefa'
+            />
+          </div>
           <div className='w-full'>
             <Autocomplete
               options={allSetores}
@@ -378,17 +406,15 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
         </div>
 
         {/*  entrega e pontuação */}
-        <div className='flex flex-col md:flex-col gap-5 my-5'>
+        <div className='flex flex-col gap-5 my-5 md:flex-col'>
           {!setor ? (
-            <span
-              className='flex my-2 text-sm justify-end font-semibold
-            '
-            >
+            <span className='flex justify-end my-2 text-sm font-semibold '>
               *Selecione o setor para acessar mais informações.
             </span>
-          ) : setor?.setor === 'Esportivas' ? (
+          ) : setor?.setor === 'Esportivas' ||
+            setor?.setor === 'Artísticas' ? (
             <>
-              <div className='flex flex-col md:flex-col gap-5 my-5'>
+              <div className='flex flex-col gap-5 my-5 md:flex-col'>
                 <span className={`${tomorrow.className} text-lg flex`}>
                   ENTREGA
                 </span>
@@ -419,7 +445,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                 <span className={`${tomorrow.className} text-lg flex`}>
                   PONTUAÇÃO
                 </span>
-                <div className='flex flex-col md:flex-row gap-3 my-5'>
+                <div className='flex flex-col gap-3 my-5 md:flex-row'>
                   <div>
                     <BlackTextField
                       required
@@ -511,9 +537,9 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                 </div>
               </div>
             </>
-          ) : setor?.setor === 'Rua' || setor?.setor === 'Artísticas' ? (
+          ) : setor?.setor === 'Rua' ? (
             <div className='flex w-full gap-5'>
-              <div className='flex flex-col md:flex-col gap-5 my-5 w-1/2'>
+              <div className='flex flex-col w-1/2 gap-5 my-5 md:flex-col'>
                 <span className={`${tomorrow.className} text-lg flex`}>
                   ENTREGA
                 </span>
@@ -540,7 +566,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                   />
                 </div>
               </div>
-              <div className='flex flex-col md:flex-col gap-5 my-5 w-1/2'>
+              <div className='flex flex-col w-1/2 gap-5 my-5 md:flex-col'>
                 <span className={`${tomorrow.className} text-lg flex`}>
                   PONTUAÇÃO
                 </span>
@@ -570,7 +596,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
             </div>
           ) : (
             <div className='flex w-full gap-5'>
-              <div className='flex flex-col md:flex-col gap-5 my-5 w-1/2'>
+              <div className='flex flex-col w-1/2 gap-5 my-5 md:flex-col'>
                 <span className={`${tomorrow.className} text-lg flex`}>
                   ENTREGA
                 </span>
@@ -598,7 +624,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                   />
                 </div>
               </div>
-              <div className='flex flex-col md:flex-col gap-5 my-5 w-1/2'>
+              <div className='flex flex-col w-1/2 gap-5 my-5 md:flex-col'>
                 <span className={`${tomorrow.className} text-lg flex`}>
                   PONTUAÇÃO
                 </span>
@@ -629,6 +655,8 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
           )}
         </div>
       </Modal>
+
+      {/* PopUp */}
       {notificationProps.setShowNotification && (
         <Notification
           importantMessage={notificationProps.importantMessage}
@@ -647,62 +675,3 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
 }
 
 export default AdicionarTarefa
-
-{
-  /*  
-  <div className='flex w-full gap-5'>
-          <div className='flex flex-col md:flex-col gap-5 my-5 w-1/2'>
-            <span className={`${tomorrow.className} text-lg flex`}>
-              RESULTADO
-            </span>
-            <div className='flex w-full'>
-              <FormControl>
-                <FormLabel id='demo-controlled-radio-buttons-group'>
-                  Gender
-                </FormLabel>
-                <RadioGroup
-                  aria-labelledby='demo-controlled-radio-buttons-group'
-                  name='controlled-radio-buttons-group'
-                  value={value}
-                  onChange={handleChange}
-                  >
-                  <FormControlLabel
-                    value='female'
-                    control={<Radio />}
-                    label='Female'
-                  />
-                  <FormControlLabel
-                    value='male'
-                    control={<Radio />}
-                    label='Male'
-                  />
-                </RadioGroup>
-              </FormControl>
-            </div>
-          </div>
-        </div>
-
-  <div className="row-1">
-        <div className="tarefa">
-          <BlackTextField
-            type="String"
-            multiline
-            rows={2}
-             onChange={(event) => {
-          setActionText(event.target.value);
-        }}
-            sx={{
-              ".MuiFormLabel-root": {
-                fontFamily: "Montserrat",
-                alignItems: "center",
-                display: "flex",
-                height: "25px",
-                color: "black",
-                fontWeight: 600,
-              },
-            }}
-            label="Observação"
-          />
-        </div>
-      </div> */
-}

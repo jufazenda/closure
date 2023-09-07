@@ -6,7 +6,6 @@ import Head from 'next/head'
 import AdicionarTarefa from './componentes/AdicionarTarefaModal'
 
 import { AddCircle, FilterNone } from '@mui/icons-material'
-import Notification from './componentes/commons/Notification'
 import CardTarefa from './componentes/CardTarefa'
 
 import { Tomorrow } from 'next/font/google'
@@ -23,6 +22,7 @@ interface PropsTarefas {
   numero_tarefa: number
   id_lote: number | null
   id_setor: number
+  pontuacaoMaxima: number
   pontuacaoPrimeiro: number
   pontuacaoSegundo: number
   pontuacaoTerceiro: number
@@ -79,29 +79,29 @@ const Home = () => {
         <title>Closure - Organizador de Fechamento</title>
       </Head>
       <main>
-        <div className='py-12 px-6 md:px-14 space-y-10 md:space-y-12'>
+        <div className='px-6 py-12 space-y-10 md:px-14 md:space-y-12'>
           <div>
-            <div className='flex items-center justify-end text-md gap-10'>
-              <span
-                className='flex cursor-pointer font-semibold gap-1'
+            <div className='flex items-center justify-end gap-10 text-md'>
+              <button
+                className='flex gap-1 font-semibold cursor-pointer'
                 onClick={() => openModal('AdicionarTarefa')}
               >
                 <AddCircle />
                 Adicionar
-              </span>
-              <span
-                className='flex cursor-pointer font-semibold gap-1'
+              </button>
+              <button
+                className='flex gap-1 font-semibold cursor-pointer'
                 //onClick={option.onClick}
               >
                 <FilterNone />
                 Filtrar
-              </span>
+              </button>
             </div>
           </div>
 
-          <div className='flex justify-center items-center w-full flex-col md:flex-row'>
+          <div className='flex flex-col items-center justify-center w-full md:flex-row'>
             {allTarefas.length ? (
-              <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 gap-10 '>
+              <div className='grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 '>
                 {allTarefas.map(tarefas => (
                   <CardTarefa
                     key={tarefas.id}
@@ -112,7 +112,7 @@ const Home = () => {
                 ))}
               </div>
             ) : (
-              <div className='flex justify-center items-center flex-col'>
+              <div className='flex flex-col items-center justify-center'>
                 <span
                   className={`${tomorrow.className} text-3xl flex uppercase`}
                 >
