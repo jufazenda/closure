@@ -119,6 +119,7 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
           loading={loading}
           setLoading={setLoading}
           idTarefa={tarefas?.id}
+          allSetores={allSetores}
         />
       ),
     }
@@ -135,8 +136,12 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
           className={`${getColorClass()} w-64 h-44 flex text-black rounded-lg flex-col cursor-pointer`}
         >
           <div className='flex justify-between h-full m-2'>
-            <div className='mx-2 my-4'>
-              <span className='flex max-w-170'>{tarefas?.tarefa}</span>
+            <div className='mx-2 my-4 w-max h-24'>
+              <span className='flex max-w-170 overflow-hidden whitespace-nowrap'>
+                <div className='flex-1 w-full h-full overflow-hidden overflow-ellipsis'>
+                  {tarefas?.tarefa}
+                </div>
+              </span>
             </div>
             <div className='flex flex-col items-end justify-between h-full'>
               <span className={`${tomorrow.className} flex`}>
@@ -145,7 +150,6 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
               <span>{horario ? horario : `Lote ${tarefas?.id_lote}`}</span>
             </div>
           </div>
-
           <div className='items-end justify-end '>
             <hr className='items-end justify-end border-t-2 border-black' />
             <span className={`${tomorrow.className} m-2`}>

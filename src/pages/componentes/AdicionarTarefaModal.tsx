@@ -84,6 +84,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
   const [allTarefas, setAllTarefas] = useState<PropsTarefas[]>([])
   const [setor, setSetor] = useState<PropsSetores | null>(null)
   const [tarefa, setTarefa] = useState<string>('')
+  const [linkTarefa, setLinkTarefa] = useState<string>('')
   const [numero, setNumero] = useState<number | string>(0)
   const [lote, setLote] = useState<number | string>('')
   const [horario, setHorario] = useState('')
@@ -155,6 +156,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
 
     setTarefaEditar(data)
     setTarefa(data.tarefa)
+    setLinkTarefa(data.link)
     setNumero(data.numero_tarefa)
     setLote(data.id_lote)
     if (setorTarefa) {
@@ -195,6 +197,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
       const { data, error } = await supabase.from('Tarefas').insert([
         {
           tarefa: tarefa,
+          link: linkTarefa,
           numero_tarefa: numero,
           id_lote: lote || null,
           id_setor: setor?.id,
@@ -235,6 +238,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
         .from('Tarefas')
         .update({
           tarefa: tarefa,
+          link: linkTarefa,
           numero_tarefa: numero,
           id_lote: lote || null,
           id_setor: setor?.id,
@@ -312,6 +316,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
               label='Tarefa'
             />
           </div>
+
           <div className='w-full md:w-3/12 '>
             <BlackTextField
               required
@@ -336,7 +341,27 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
         </div>
 
         {/*  setor*/}
-        <div className='flex my-5 md:flex-row'>
+        <div className='flex my-5 md:flex-col gap-5'>
+          <div className='w-full md:w-full'>
+            <BlackTextField
+              type='String'
+              onChange={event => {
+                setLinkTarefa(event.target.value)
+              }}
+              value={linkTarefa}
+              sx={{
+                '.MuiFormLabel-root': {
+                  alignItems: 'center',
+                  display: 'flex',
+                  height: '25px',
+                  color: 'black',
+                  fontWeight: 600,
+                },
+                width: '100%',
+              }}
+              label='Link da Tarefa'
+            />
+          </div>
           <div className='w-full'>
             <Autocomplete
               options={allSetores}
