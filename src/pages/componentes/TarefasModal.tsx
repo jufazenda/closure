@@ -702,7 +702,7 @@ const TarefasModal = ({
                   <span
                     className={`${tomorrow.className} text-3xl flex break-words w-3/4`}
                   >
-                    {tarefas.tarefa}
+                    {tarefas?.tarefa}
                   </span>
 
                   <span className={`${tomorrow.className} text-2xl flex`}>
