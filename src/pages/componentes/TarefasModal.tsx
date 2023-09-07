@@ -185,7 +185,7 @@ const TarefasModal = ({
     const components: ModalComponents = {
       Editar: (
         <AdicionarTarefa
-          key={tarefas.id}
+          key={tarefas?.id}
           activeModal={editModalActive}
           setActiveModal={setEditModalActive}
           loading={loading}
@@ -284,7 +284,7 @@ const TarefasModal = ({
       .from('ForcaSK')
       .update({
         colocacao: forcaskColocacao?.id || null,
-        tarefaCumprida: tarefas.pontuacaoMaxima ? tarefaCumpridaSK : null,
+        tarefaCumprida: tarefas?.pontuacaoMaxima ? tarefaCumpridaSK : null,
         bonificacao: Number(bonificacaoSK),
       })
       .eq('id_tarefa', idTarefa)
@@ -300,7 +300,7 @@ const TarefasModal = ({
       .from('AguiaDeFogo')
       .update({
         colocacao: aguiaColocacao?.id || null,
-        tarefaCumprida: tarefas.pontuacaoMaxima
+        tarefaCumprida: tarefas?.pontuacaoMaxima
           ? tarefaCumpridaAguia
           : null,
         bonificacao: Number(bonificacaoAguia),
@@ -317,7 +317,7 @@ const TarefasModal = ({
       .from('Poupanca')
       .update({
         colocacao: poupancaColocacao?.id || null,
-        tarefaCumprida: tarefas.pontuacaoMaxima
+        tarefaCumprida: tarefas?.pontuacaoMaxima
           ? tarefaCumpridaPoups
           : null,
         bonificacao: Number(bonificacaoPoups),
@@ -334,7 +334,7 @@ const TarefasModal = ({
       .from('Medonhos')
       .update({
         colocacao: medonhosColocacao?.id || null,
-        tarefaCumprida: tarefas.pontuacaoMaxima ? tarefaCumpridaMed : null,
+        tarefaCumprida: tarefas?.pontuacaoMaxima ? tarefaCumpridaMed : null,
         bonificacao: Number(bonificacaoMedonhos),
       })
       .eq('id_tarefa', idTarefa)
@@ -502,9 +502,9 @@ const TarefasModal = ({
   }, [opcoesColocacao])
 
   const calculandoResultado = () => {
-    if (tarefas.pontuacaoMaxima) {
+    if (tarefas?.pontuacaoMaxima) {
       if (tarefaCumpridaSK) {
-        setForcask(Number(tarefas.pontuacaoMaxima) + Number(bonificacaoSK))
+        setForcask(Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoSK))
       } else if (bonificacaoSK) {
         setForcask(Number(bonificacaoSK))
       } else {
@@ -513,7 +513,7 @@ const TarefasModal = ({
 
       if (tarefaCumpridaAguia) {
         setAguia(
-          Number(tarefas.pontuacaoMaxima) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoAguia)
         )
       } else if (bonificacaoAguia) {
         setAguia(Number(bonificacaoAguia))
@@ -523,7 +523,7 @@ const TarefasModal = ({
 
       if (tarefaCumpridaPoups) {
         setPoupanca(
-          Number(tarefas.pontuacaoMaxima) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoPoups)
         )
       } else if (bonificacaoPoups) {
         setPoupanca(Number(bonificacaoPoups))
@@ -533,7 +533,7 @@ const TarefasModal = ({
 
       if (tarefaCumpridaMed) {
         setMedonhos(
-          Number(tarefas.pontuacaoMaxima) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoMedonhos)
         )
       } else if (bonificacaoMedonhos) {
         setMedonhos(Number(bonificacaoMedonhos))
@@ -543,18 +543,18 @@ const TarefasModal = ({
     } else {
       if (forcaskColocacao?.id === 1) {
         setForcask(
-          Number(tarefas.pontuacaoPrimeiro) + Number(bonificacaoSK)
+          Number(tarefas?.pontuacaoPrimeiro) + Number(bonificacaoSK)
         )
       } else if (forcaskColocacao?.id === 2) {
         setForcask(
-          Number(tarefas.pontuacaoSegundo) + Number(bonificacaoSK)
+          Number(tarefas?.pontuacaoSegundo) + Number(bonificacaoSK)
         )
       } else if (forcaskColocacao?.id === 3) {
         setForcask(
-          Number(tarefas.pontuacaoTerceiro) + Number(bonificacaoSK)
+          Number(tarefas?.pontuacaoTerceiro) + Number(bonificacaoSK)
         )
       } else if (forcaskColocacao?.id === 4) {
-        setForcask(Number(tarefas.pontuacaoQuarto) + Number(bonificacaoSK))
+        setForcask(Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoSK))
       } else if (forcaskColocacao?.id === 5 && bonificacaoSK) {
         setForcask(Number(bonificacaoSK))
       } else {
@@ -563,19 +563,19 @@ const TarefasModal = ({
 
       if (aguiaColocacao?.id === 1) {
         setAguia(
-          Number(tarefas.pontuacaoPrimeiro) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoPrimeiro) + Number(bonificacaoAguia)
         )
       } else if (aguiaColocacao?.id === 2) {
         setAguia(
-          Number(tarefas.pontuacaoSegundo) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoSegundo) + Number(bonificacaoAguia)
         )
       } else if (aguiaColocacao?.id === 3) {
         setAguia(
-          Number(tarefas.pontuacaoTerceiro) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoTerceiro) + Number(bonificacaoAguia)
         )
       } else if (aguiaColocacao?.id === 4) {
         setAguia(
-          Number(tarefas.pontuacaoQuarto) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoAguia)
         )
       } else if (aguiaColocacao?.id === 5 && bonificacaoAguia) {
         setAguia(Number(bonificacaoAguia))
@@ -585,19 +585,19 @@ const TarefasModal = ({
 
       if (poupancaColocacao?.id === 1) {
         setPoupanca(
-          Number(tarefas.pontuacaoPrimeiro) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoPrimeiro) + Number(bonificacaoPoups)
         )
       } else if (poupancaColocacao?.id === 2) {
         setPoupanca(
-          Number(tarefas.pontuacaoSegundo) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoSegundo) + Number(bonificacaoPoups)
         )
       } else if (poupancaColocacao?.id === 3) {
         setPoupanca(
-          Number(tarefas.pontuacaoTerceiro) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoTerceiro) + Number(bonificacaoPoups)
         )
       } else if (poupancaColocacao?.id === 4) {
         setPoupanca(
-          Number(tarefas.pontuacaoQuarto) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoPoups)
         )
       } else if (poupancaColocacao?.id === 5 && bonificacaoPoups) {
         setPoupanca(Number(bonificacaoPoups))
@@ -607,19 +607,19 @@ const TarefasModal = ({
 
       if (medonhosColocacao?.id === 1) {
         setMedonhos(
-          Number(tarefas.pontuacaoPrimeiro) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoPrimeiro) + Number(bonificacaoMedonhos)
         )
       } else if (medonhosColocacao?.id === 2) {
         setMedonhos(
-          Number(tarefas.pontuacaoSegundo) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoSegundo) + Number(bonificacaoMedonhos)
         )
       } else if (medonhosColocacao?.id === 3) {
         setMedonhos(
-          Number(tarefas.pontuacaoTerceiro) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoTerceiro) + Number(bonificacaoMedonhos)
         )
       } else if (medonhosColocacao?.id === 4) {
         setMedonhos(
-          Number(tarefas.pontuacaoQuarto) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoMedonhos)
         )
       } else if (medonhosColocacao?.id === 5 && bonificacaoMedonhos) {
         setMedonhos(Number(bonificacaoMedonhos))
@@ -729,30 +729,30 @@ const TarefasModal = ({
                 </div>
                 <div className='flex flex-col justify-between w-full items-center md:flex-row'>
                   <span className={`${tomorrow.className} text-lg flex`}>
-                    {tarefas.id_lote
-                      ? `Lote ${tarefas.id_lote} `
+                    {tarefas?.id_lote
+                      ? `Lote ${tarefas?.id_lote} `
                       : horarioPadrao}
                   </span>
                   <div>
                     <span className={`${tomorrow.className} text-md flex`}>
-                      {tarefas.pontuacaoMaxima ? (
+                      {tarefas?.pontuacaoMaxima ? (
                         <span
                           className={`p-2 rounded-md ${getColorClass300()} `}
-                        >{`Pontuação: ${tarefas.pontuacaoMaxima} `}</span>
+                        >{`Pontuação: ${tarefas?.pontuacaoMaxima} `}</span>
                       ) : (
                         <div className='flex gap-7'>
                           <span
                             className={`p-2 rounded-md ${getColorClass300()} `}
-                          >{`1º - ${tarefas.pontuacaoPrimeiro} `}</span>
+                          >{`1º - ${tarefas?.pontuacaoPrimeiro} `}</span>
                           <span
                             className={`p-2 rounded-md ${getColorClass300()} `}
-                          >{`2º - ${tarefas.pontuacaoSegundo} `}</span>
+                          >{`2º - ${tarefas?.pontuacaoSegundo} `}</span>
                           <span
                             className={`p-2 rounded-md ${getColorClass300()} `}
-                          >{`3º - ${tarefas.pontuacaoTerceiro} `}</span>
+                          >{`3º - ${tarefas?.pontuacaoTerceiro} `}</span>
                           <span
                             className={`p-2 rounded-md ${getColorClass300()} `}
-                          >{`4º - ${tarefas.pontuacaoQuarto} `}</span>
+                          >{`4º - ${tarefas?.pontuacaoQuarto} `}</span>
                         </div>
                       )}
                     </span>
@@ -766,7 +766,7 @@ const TarefasModal = ({
                     className={`${tomorrow.className} text-xl flex justify-between items-center`}
                   >
                     RESULTADO
-                    {tarefas.id_setor === 1 ? (
+                    {tarefas?.id_setor === 1 ? (
                       <div>
                         <BlackTextField
                           type='String'
@@ -790,7 +790,7 @@ const TarefasModal = ({
                     ) : null}
                   </span>
                   <span className='flex justify-center w-full'>
-                    {tarefas.pontuacaoMaxima ? (
+                    {tarefas?.pontuacaoMaxima ? (
                       <div className='grid grid-cols-1 gap-10 mb-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
                         <div className='flex flex-col items-center justify-center gap-5 '>
                           <Image
