@@ -6,11 +6,9 @@ import Head from 'next/head'
 import AdicionarTarefa from './componentes/AdicionarTarefaModal'
 
 import { AddCircle, FilterNone } from '@mui/icons-material'
-import Notification from './componentes/commons/Notification'
 import CardTarefa from './componentes/CardTarefa'
 
 import { Tomorrow } from 'next/font/google'
-import TarefasModal from './componentes/TarefasModal'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 

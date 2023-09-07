@@ -2,6 +2,9 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import supabase from '../api/supabase'
 
+import { Tomorrow } from 'next/font/google'
+import TarefasModal from './TarefasModal'
+
 interface PropsCardTarefa {
   tarefas: PropsTarefas
   loading: boolean
@@ -30,10 +33,6 @@ interface PropsSetores {
 interface ModalComponents {
   [key: string]: JSX.Element
 }
-
-import { Tomorrow } from 'next/font/google'
-import AdicionarTarefa from './AdicionarTarefaModal'
-import TarefasModal from './TarefasModal'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 

@@ -1,13 +1,12 @@
 'use client'
 
-import React, { useState, ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import { Button } from '@mui/material'
 
 import { FC } from 'react'
 
-import { ThemeProvider, createTheme, styled } from '@mui/material/styles'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { Tomorrow } from 'next/font/google'
-import { blue } from '@mui/material/colors'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 
