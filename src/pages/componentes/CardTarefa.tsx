@@ -9,6 +9,7 @@ interface PropsCardTarefa {
   tarefas: PropsTarefas
   loading: boolean
   setLoading: Dispatch<SetStateAction<boolean>>
+  listMode: boolean
 }
 interface PropsTarefas {
   id: number
@@ -36,7 +37,12 @@ interface ModalComponents {
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 
-const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
+const CardTarefa = ({
+  tarefas,
+  loading,
+  setLoading,
+  listMode,
+}: PropsCardTarefa) => {
   const [allSetores, setAllSetores] = useState<PropsSetores | null>(null)
   const [horario, setHorario] = useState('')
   const [activeModal, setActiveModal] = useState<boolean>(false)
@@ -126,39 +132,78 @@ const CardTarefa = ({ tarefas, loading, setLoading }: PropsCardTarefa) => {
   }
 
   return (
-    <div>
-      <span
-        className='flex cursor-pointer'
-        onClick={() => openModal('Informacoes')}
-      >
-        <div
-          className={`${getColorClass()} w-64 h-44 flex text-black rounded-lg flex-col cursor-pointer`}
-        >
-          <div className='flex justify-between h-full m-2'>
-            <div className='mx-2 my-4 w-max h-24'>
-              <span className='flex max-w-170 overflow-hidden whitespace-nowrap'>
-                <div className='flex-1 w-full h-full overflow-hidden overflow-ellipsis'>
-                  {tarefas?.tarefa}
-                </div>
-              </span>
+    <>
+      {listMode ? (
+        <div>
+          <span
+            className='flex cursor-pointer'
+            onClick={() => openModal('Informacoes')}
+          >
+            <div
+              className={`${getColorClass()} w-full h-40 md:h-16 flex text-black rounded-lg cursor-pointer`}
+            >
+              <div className='flex m-2 items-center w-full gap-5'>
+                <span
+                  className={`${tomorrow.className} flex w-1/12 justify-center `}
+                >
+                  {ajustarNumero()}
+                </span>
+                <span className='flex w-7/12 md:w-3/4 overflow-hidden whitespace-nowrap'>
+                  <div className='flex-1 w-3/4 overflow-hidden overflow-ellipsis'>
+                    {tarefas?.tarefa}
+                  </div>
+                </span>
+                <span className='flex w-1/12 justify-center'>
+                  {horario ? horario : `Lote ${tarefas?.id_lote}`}
+                </span>
+                <span
+                  className={`${tomorrow.className} m-2 w-1/12 justify-center hidden md:flex`}
+                >
+                  {allSetores?.setor}
+                </span>
+              </div>
             </div>
-            <div className='flex flex-col items-end justify-between h-full'>
-              <span className={`${tomorrow.className} flex`}>
-                {ajustarNumero()}
-              </span>
-              <span>{horario ? horario : `Lote ${tarefas?.id_lote}`}</span>
-            </div>
-          </div>
-          <div className='items-end justify-end '>
-            <hr className='items-end justify-end border-t-2 border-black' />
-            <span className={`${tomorrow.className} m-2`}>
-              {allSetores?.setor}
-            </span>
-          </div>
+          </span>
+          {activeModal && chooseModal(modalComponentName)}
         </div>
-      </span>
-      {activeModal && chooseModal(modalComponentName)}
-    </div>
+      ) : (
+        <div>
+          <span
+            className='flex cursor-pointer'
+            onClick={() => openModal('Informacoes')}
+          >
+            <div
+              className={`${getColorClass()} w-64 h-44 flex text-black rounded-lg flex-col cursor-pointer`}
+            >
+              <div className='flex justify-between h-full m-2'>
+                <div className='mx-2 my-4 w-max h-24'>
+                  <span className='flex max-w-170 overflow-hidden whitespace-nowrap'>
+                    <div className='flex-1 w-full h-full overflow-hidden overflow-ellipsis'>
+                      {tarefas?.tarefa}
+                    </div>
+                  </span>
+                </div>
+                <div className='flex flex-col items-end justify-between h-full'>
+                  <span className={`${tomorrow.className} flex`}>
+                    {ajustarNumero()}
+                  </span>
+                  <span>
+                    {horario ? horario : `Lote ${tarefas?.id_lote}`}
+                  </span>
+                </div>
+              </div>
+              <div className='items-end justify-end '>
+                <hr className='items-end justify-end border-t-2 border-black' />
+                <span className={`${tomorrow.className} m-2`}>
+                  {allSetores?.setor}
+                </span>
+              </div>
+            </div>
+          </span>
+          {activeModal && chooseModal(modalComponentName)}
+        </div>
+      )}
+    </>
   )
 }
 

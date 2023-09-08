@@ -5,11 +5,18 @@ import supabase from './api/supabase'
 import Head from 'next/head'
 import AdicionarTarefa from './componentes/AdicionarTarefaModal'
 
-import { AddCircle } from '@mui/icons-material'
+import { AddCircle, Apps, Reorder } from '@mui/icons-material'
 import CardTarefa from './componentes/CardTarefa'
 
 import { Tomorrow } from 'next/font/google'
 import SearchBox from './componentes/SearchBox'
+import {
+  ButtonGroup,
+  IconButton,
+  Tooltip,
+  createTheme,
+} from '@mui/material'
+import { ThemeProvider } from '@emotion/react'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 
@@ -31,10 +38,19 @@ interface PropsTarefas {
   horario: string
 }
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: 'rgba(0, 0, 0, 1)',
+    },
+  },
+})
+
 const Home = () => {
   const [activeModal, setActiveModal] = useState<boolean>(false)
   const [modalComponentName, setModalComponentName] = useState('')
   const [loading, setLoading] = useState(false)
+  const [listMode, setListMode] = useState(false)
 
   const [allTarefas, setAllTarefas] = useState<PropsTarefas[]>([])
 
@@ -81,7 +97,7 @@ const Home = () => {
   }
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Head>
         <title>Closure - Organizador de Fechamento</title>
       </Head>
@@ -105,10 +121,86 @@ const Home = () => {
                 Adicionar
               </button>
             </div>
+            <div className='flex items-center justify-end text-lg gap-3'>
+              <ButtonGroup
+                variant='contained'
+                aria-label='text button group'
+                disableElevation
+              >
+                <Tooltip title='Modo Lista'>
+                  <IconButton
+                    onClick={() => {
+                      setListMode(true)
+                    }}
+                    color='primary'
+                  >
+                    <Reorder />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title='Modo Grade'>
+                  <IconButton
+                    onClick={() => {
+                      setListMode(false)
+                    }}
+                    color='primary'
+                  >
+                    <Apps />
+                  </IconButton>
+                </Tooltip>
+              </ButtonGroup>
+            </div>
           </div>
 
           <div className='flex flex-col items-center justify-center w-full md:flex-row'>
-            {buscando === '' ? ( // Verifica se o campo de busca está vazio
+            {listMode ? (
+              buscando === '' ? (
+                allTarefas.length ? (
+                  <div className='w-full flex flex-col gap-2'>
+                    {allTarefas.map(tarefas => (
+                      <CardTarefa
+                        key={tarefas.id}
+                        tarefas={tarefas}
+                        loading={loading}
+                        setLoading={setLoading}
+                        listMode={listMode}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className='flex flex-col items-center justify-center'>
+                    <span
+                      className={`${tomorrow.className} text-3xl flex uppercase`}
+                    >
+                      Sem tarefas cadastradas
+                    </span>
+                    <span className='m-5'>
+                      Clique em Adicionar e comece a gincana!
+                    </span>
+                  </div>
+                )
+              ) : buscando && filteredTarefas.length ? (
+                <div className='w-full flex flex-col gap-2'>
+                  {allTarefas.map(tarefas => (
+                    <CardTarefa
+                      key={tarefas.id}
+                      tarefas={tarefas}
+                      loading={loading}
+                      setLoading={setLoading}
+                      listMode={listMode}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className='flex flex-col items-center justify-center'>
+                  <span
+                    className={`${tomorrow.className} text-3xl flex uppercase`}
+                  >
+                    Sem tarefas correspondentes
+                  </span>
+                  <span className='m-5'>Nenhum resultado encontrado.</span>
+                </div>
+              )
+            ) : buscando === '' ? (
               allTarefas.length ? (
                 <div className='grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 '>
                   {allTarefas.map(tarefas => (
@@ -117,6 +209,7 @@ const Home = () => {
                       tarefas={tarefas}
                       loading={loading}
                       setLoading={setLoading}
+                      listMode={listMode}
                     />
                   ))}
                 </div>
@@ -132,7 +225,7 @@ const Home = () => {
                   </span>
                 </div>
               )
-            ) : buscando && filteredTarefas.length ? ( // Verifica se há resultados de busca
+            ) : buscando && filteredTarefas.length ? (
               <div className='grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 '>
                 {filteredTarefas.map(tarefas => (
                   <CardTarefa
@@ -140,6 +233,7 @@ const Home = () => {
                     tarefas={tarefas}
                     loading={loading}
                     setLoading={setLoading}
+                    listMode={listMode}
                   />
                 ))}
               </div>
@@ -158,7 +252,7 @@ const Home = () => {
           {activeModal && chooseModal(modalComponentName)}
         </div>
       </main>
-    </>
+    </ThemeProvider>
   )
 }
 
