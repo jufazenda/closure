@@ -5,7 +5,7 @@ import supabase from './api/supabase'
 import Head from 'next/head'
 import AdicionarTarefa from './componentes/AdicionarTarefaModal'
 
-import { AddCircle, FilterNone } from '@mui/icons-material'
+import { AddCircle } from '@mui/icons-material'
 import CardTarefa from './componentes/CardTarefa'
 
 import { Tomorrow } from 'next/font/google'
@@ -104,13 +104,6 @@ const Home = () => {
                 <AddCircle />
                 Adicionar
               </button>
-              {/*  <button
-                className='flex gap-1 items-center font-semibold cursor-pointer hover:text-padrao-orange-300'
-                //onClick={option.onClick}
-              >
-                <FilterNone />
-                Filtrar
-              </button> */}
             </div>
           </div>
 
