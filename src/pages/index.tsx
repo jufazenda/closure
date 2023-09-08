@@ -9,6 +9,7 @@ import { AddCircle, FilterNone } from '@mui/icons-material'
 import CardTarefa from './componentes/CardTarefa'
 
 import { Tomorrow } from 'next/font/google'
+import SearchBox from './componentes/SearchBox'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 
@@ -37,6 +38,11 @@ const Home = () => {
 
   const [allTarefas, setAllTarefas] = useState<PropsTarefas[]>([])
 
+  const [buscando, setBuscando] = useState('')
+  const [filteredTarefas, setFilteredTarefas] = useState<PropsTarefas[]>(
+    []
+  )
+
   useEffect(() => {
     fetchData()
   }, [loading])
@@ -52,6 +58,7 @@ const Home = () => {
       return
     }
     setAllTarefas(data)
+    setFilteredTarefas(data)
   }
 
   const openModal = (modalName: string) => {
@@ -80,29 +87,61 @@ const Home = () => {
       </Head>
       <main>
         <div className='px-6 py-12 space-y-10 md:px-14 md:space-y-12'>
-          <div>
-            <div className='flex items-center justify-end gap-10 text-md'>
+          <div className='flex items-center justify-center gap-16'>
+            <div className='w-8/12 flex'>
+              <SearchBox
+                buscando={buscando}
+                setBuscando={setBuscando}
+                allTarefas={allTarefas}
+                setFilteredTarefas={setFilteredTarefas}
+              />
+            </div>
+            <div className='flex items-center justify-end text-lg gap-10'>
               <button
-                className='flex gap-1 font-semibold cursor-pointer'
+                className='flex gap-1 items-center font-semibold cursor-pointer hover:text-padrao-pink-300'
                 onClick={() => openModal('AdicionarTarefa')}
               >
                 <AddCircle />
                 Adicionar
               </button>
-              <button
-                className='flex gap-1 font-semibold cursor-pointer'
+              {/*  <button
+                className='flex gap-1 items-center font-semibold cursor-pointer hover:text-padrao-orange-300'
                 //onClick={option.onClick}
               >
                 <FilterNone />
                 Filtrar
-              </button>
+              </button> */}
             </div>
           </div>
 
           <div className='flex flex-col items-center justify-center w-full md:flex-row'>
-            {allTarefas.length ? (
+            {buscando === '' ? ( // Verifica se o campo de busca está vazio
+              allTarefas.length ? (
+                <div className='grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 '>
+                  {allTarefas.map(tarefas => (
+                    <CardTarefa
+                      key={tarefas.id}
+                      tarefas={tarefas}
+                      loading={loading}
+                      setLoading={setLoading}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className='flex flex-col items-center justify-center'>
+                  <span
+                    className={`${tomorrow.className} text-3xl flex uppercase`}
+                  >
+                    Sem tarefas cadastradas
+                  </span>
+                  <span className='m-5'>
+                    Clique em Adicionar e comece a gincana!
+                  </span>
+                </div>
+              )
+            ) : buscando && filteredTarefas.length ? ( // Verifica se há resultados de busca
               <div className='grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 '>
-                {allTarefas.map(tarefas => (
+                {filteredTarefas.map(tarefas => (
                   <CardTarefa
                     key={tarefas.id}
                     tarefas={tarefas}
@@ -116,11 +155,9 @@ const Home = () => {
                 <span
                   className={`${tomorrow.className} text-3xl flex uppercase`}
                 >
-                  Sem tarefas cadastradas
+                  Sem tarefas correspondentes
                 </span>
-                <span className='m-5'>
-                  Clique em Adicionar e comece a gincana!
-                </span>
+                <span className='m-5'>Nenhum resultado encontrado.</span>
               </div>
             )}
           </div>
