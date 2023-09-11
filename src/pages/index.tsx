@@ -38,6 +38,13 @@ interface PropsTarefas {
   horario: string
 }
 
+interface PropsSetores {
+  id: number
+  setor: string
+  responsavel: string
+  created_at: Date
+}
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -50,11 +57,13 @@ const Home = () => {
   const [activeModal, setActiveModal] = useState<boolean>(false)
   const [modalComponentName, setModalComponentName] = useState('')
   const [loading, setLoading] = useState(false)
-  const [listMode, setListMode] = useState(false)
+  const [listMode, setListMode] = useState(true)
 
   const [allTarefas, setAllTarefas] = useState<PropsTarefas[]>([])
 
   const [buscando, setBuscando] = useState('')
+
+  const [setor, setSetor] = useState<PropsSetores | null>(null)
   const [filteredTarefas, setFilteredTarefas] = useState<PropsTarefas[]>(
     []
   )
@@ -110,6 +119,7 @@ const Home = () => {
                 setBuscando={setBuscando}
                 allTarefas={allTarefas}
                 setFilteredTarefas={setFilteredTarefas}
+                setSetor={setSetor}
               />
             </div>
             <div className='flex items-center justify-end text-lg gap-10'>
@@ -153,7 +163,7 @@ const Home = () => {
 
           <div className='flex flex-col items-center justify-center w-full md:flex-row'>
             {listMode ? (
-              buscando === '' ? (
+              buscando === '' && setor === null ? (
                 allTarefas.length ? (
                   <div className='w-full flex flex-col gap-2'>
                     {allTarefas.map(tarefas => (
@@ -178,9 +188,9 @@ const Home = () => {
                     </span>
                   </div>
                 )
-              ) : buscando && filteredTarefas.length ? (
+              ) : (buscando || setor) && filteredTarefas.length ? (
                 <div className='w-full flex flex-col gap-2'>
-                  {allTarefas.map(tarefas => (
+                  {filteredTarefas.map(tarefas => (
                     <CardTarefa
                       key={tarefas.id}
                       tarefas={tarefas}
@@ -200,7 +210,7 @@ const Home = () => {
                   <span className='m-5'>Nenhum resultado encontrado.</span>
                 </div>
               )
-            ) : buscando === '' ? (
+            ) : buscando === '' && setor === null ? (
               allTarefas.length ? (
                 <div className='grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 '>
                   {allTarefas.map(tarefas => (
@@ -225,7 +235,7 @@ const Home = () => {
                   </span>
                 </div>
               )
-            ) : buscando && filteredTarefas.length ? (
+            ) : (buscando || setor) && filteredTarefas.length ? (
               <div className='grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 '>
                 {filteredTarefas.map(tarefas => (
                   <CardTarefa

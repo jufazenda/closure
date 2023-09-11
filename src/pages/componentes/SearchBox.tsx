@@ -1,14 +1,17 @@
 import { Search } from '@mui/icons-material'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 import {
+  Autocomplete,
+  Divider,
   InputAdornment,
   TextField,
   ThemeProvider,
   createTheme,
   styled,
 } from '@mui/material'
+import supabase from '../api/supabase'
 
 interface PropsTarefas {
   id: number
@@ -24,11 +27,19 @@ interface PropsTarefas {
   horario: string
 }
 
+interface PropsSetores {
+  id: number
+  setor: string
+  responsavel: string
+  created_at: Date
+}
+
 interface SearchBoxProps {
   buscando: string
   allTarefas: PropsTarefas[]
   setBuscando: (value: string) => void
   setFilteredTarefas: (value: PropsTarefas[]) => void
+  setSetor: (value: PropsSetores | null) => void
 }
 
 const theme = createTheme({
@@ -62,7 +73,23 @@ const SearchBox = ({
   allTarefas,
   setBuscando,
   setFilteredTarefas,
+  setSetor,
 }: SearchBoxProps) => {
+  const [allSetores, setAllSetores] = useState<PropsSetores[]>([])
+
+  const fetchDataSetores = async () => {
+    const { data, error } = await supabase
+      .from('Setores')
+      .select('*')
+      .order('setor')
+
+    if (error) {
+      console.error('Erro ao buscar dados setores:', error.message)
+      return
+    }
+    setAllSetores(data)
+  }
+
   const handleSearch = (searchTerm: string) => {
     setBuscando(searchTerm)
 
@@ -74,6 +101,20 @@ const SearchBox = ({
       )
     )
   }
+
+  const handleSearchSetor = (searchTerm: PropsSetores | null) => {
+    setSetor(searchTerm)
+
+    if (searchTerm) {
+      setFilteredTarefas(
+        allTarefas?.filter(tarefa => tarefa.id_setor == searchTerm.id)
+      )
+    }
+  }
+
+  useEffect(() => {
+    fetchDataSetores()
+  }, [])
 
   return (
     <ThemeProvider theme={theme}>
@@ -94,7 +135,7 @@ const SearchBox = ({
                 color: 'black',
                 fontWeight: 600,
               },
-              width: '100%',
+              width: '80%',
             }}
             placeholder={'Buscar tarefa por nome ou número...'}
             InputProps={{
@@ -104,6 +145,44 @@ const SearchBox = ({
                 </InputAdornment>
               ),
             }}
+          />
+          <Divider />
+          <Autocomplete
+            options={allSetores}
+            getOptionLabel={option => option.setor}
+            ListboxProps={{
+              style: { maxHeight: 190, fontFamily: 'Montserrat' },
+            }}
+            size='medium'
+            onChange={(event, newValue) => {
+              handleSearchSetor(newValue)
+            }}
+            sx={{
+              '.MuiFormLabel-root': {
+                alignItems: 'center',
+                display: 'flex',
+                height: '25px',
+                color: 'black',
+                fontWeight: 600,
+              },
+            }}
+            renderInput={params => (
+              <BlackTextField
+                {...params}
+                placeholder='Setor'
+                variant='outlined'
+                sx={{
+                  '.MuiFormLabel-root': {
+                    alignItems: 'center',
+                    display: 'flex',
+                    height: '25px',
+                    color: 'black',
+                    fontWeight: 600,
+                  },
+                  width: '200px',
+                }}
+              />
+            )}
           />
         </div>
       </div>

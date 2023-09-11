@@ -334,7 +334,9 @@ const TarefasModal = ({
       .from('Medonhos')
       .update({
         colocacao: medonhosColocacao?.id || null,
-        tarefaCumprida: tarefas?.pontuacaoMaxima ? tarefaCumpridaMed : null,
+        tarefaCumprida: tarefas?.pontuacaoMaxima
+          ? tarefaCumpridaMed
+          : null,
         bonificacao: Number(bonificacaoMedonhos),
       })
       .eq('id_tarefa', idTarefa)
@@ -504,7 +506,9 @@ const TarefasModal = ({
   const calculandoResultado = () => {
     if (tarefas?.pontuacaoMaxima) {
       if (tarefaCumpridaSK) {
-        setForcask(Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoSK))
+        setForcask(
+          Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoSK)
+        )
       } else if (bonificacaoSK) {
         setForcask(Number(bonificacaoSK))
       } else {
@@ -554,7 +558,9 @@ const TarefasModal = ({
           Number(tarefas?.pontuacaoTerceiro) + Number(bonificacaoSK)
         )
       } else if (forcaskColocacao?.id === 4) {
-        setForcask(Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoSK))
+        setForcask(
+          Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoSK)
+        )
       } else if (forcaskColocacao?.id === 5 && bonificacaoSK) {
         setForcask(Number(bonificacaoSK))
       } else {
@@ -776,7 +782,6 @@ const TarefasModal = ({
                           }}
                           sx={{
                             '.MuiFormLabel-root': {
-                              fontFamily: 'Montserrat',
                               alignItems: 'center',
                               display: 'flex',
                               height: '25px',
@@ -801,8 +806,8 @@ const TarefasModal = ({
                             priority
                           />
                           <Toggle
-                            setTarefaCumprida={setTarefaCumpridaSK}
-                            tarefaCumprida={tarefaCumpridaSK}
+                            setChange={setTarefaCumpridaSK}
+                            change={tarefaCumpridaSK}
                           />
                           <BlackTextField
                             type='number'
@@ -833,8 +838,8 @@ const TarefasModal = ({
                             priority
                           />
                           <Toggle
-                            setTarefaCumprida={setTarefaCumpridaAguia}
-                            tarefaCumprida={tarefaCumpridaAguia}
+                            setChange={setTarefaCumpridaAguia}
+                            change={tarefaCumpridaAguia}
                           />
                           <BlackTextField
                             type='number'
@@ -865,8 +870,8 @@ const TarefasModal = ({
                             priority
                           />
                           <Toggle
-                            setTarefaCumprida={setTarefaCumpridaPoups}
-                            tarefaCumprida={tarefaCumpridaPoups}
+                            setChange={setTarefaCumpridaPoups}
+                            change={tarefaCumpridaPoups}
                           />
                           <BlackTextField
                             type='number'
@@ -897,8 +902,8 @@ const TarefasModal = ({
                             priority
                           />
                           <Toggle
-                            setTarefaCumprida={setTarefaCumpridaMed}
-                            tarefaCumprida={tarefaCumpridaMed}
+                            setChange={setTarefaCumpridaMed}
+                            change={tarefaCumpridaMed}
                           />
                           <BlackTextField
                             type='number'
@@ -1221,7 +1226,6 @@ const TarefasModal = ({
                       }}
                       sx={{
                         '.MuiFormLabel-root': {
-                          fontFamily: 'Montserrat',
                           alignItems: 'center',
                           display: 'flex',
                           height: '25px',
