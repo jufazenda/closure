@@ -17,6 +17,7 @@ import { AddCircle } from '@mui/icons-material'
 import Notification from './commons/Notification'
 
 import { Tomorrow } from 'next/font/google'
+import Toggle from './commons/Toggle'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 
@@ -105,6 +106,8 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
   )
 
   const [showNotification, setShowNotification] = useState<boolean>(false)
+  const [artisticaEspecial, setArtisticaEspecial] =
+    useState<boolean>(false)
 
   const verificarIdExistente = (num: number | string) => {
     return allTarefas.some(tarefa => tarefa.numero_tarefa == num)
@@ -411,8 +414,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
             <span className='flex justify-end my-2 text-sm font-semibold '>
               *Selecione o setor para acessar mais informações.
             </span>
-          ) : setor?.setor === 'Esportivas' ||
-            setor?.setor === 'Artísticas' ? (
+          ) : setor?.setor === 'Esportivas' ? (
             <>
               <div className='flex flex-col gap-5 my-5 md:flex-col'>
                 <span className={`${tomorrow.className} text-lg flex`}>
@@ -594,6 +596,174 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                 </div>
               </div>
             </div>
+          ) : setor?.setor === 'Artísticas' ? (
+            <>
+              <div className='flex flex-col gap-5 my-5 md:flex-col'>
+                <span className={`${tomorrow.className} text-lg flex`}>
+                  ENTREGA
+                </span>
+                <div className='w-full'>
+                  <BlackTextField
+                    required
+                    color='primary'
+                    type='time'
+                    onChange={event => {
+                      setHorario(event.target.value)
+                    }}
+                    value={horario}
+                    sx={{
+                      '.MuiFormLabel-root': {
+                        alignItems: 'center',
+                        display: 'flex',
+                        height: '25px',
+                        color: 'black',
+                        fontWeight: 600,
+                      },
+                      width: '100%',
+                    }}
+                    label='Horário'
+                  />
+                </div>
+                <div>
+                  <span
+                    className={`${tomorrow.className} text-lg flex uppercase my-4`}
+                  >
+                    Tarefa do Baile
+                  </span>
+                  <Toggle
+                    setChange={setArtisticaEspecial}
+                    change={artisticaEspecial}
+                    save={pontuacaoPrimeiro ? true : false}
+                  />
+                </div>
+              </div>
+
+              {artisticaEspecial || pontuacaoPrimeiro ? (
+                <div className='flex flex-col md:flex-col '>
+                  <span className={`${tomorrow.className} text-lg flex`}>
+                    PONTUAÇÃO
+                  </span>
+                  <div className='flex flex-col gap-3 my-5 md:flex-row'>
+                    <div>
+                      <BlackTextField
+                        required
+                        type='number'
+                        inputProps={{ min: 0 }}
+                        value={pontuacaoPrimeiro}
+                        onChange={event => {
+                          setPontuacaoPrimeiro(event.target.value)
+                        }}
+                        sx={{
+                          '.MuiFormLabel-root': {
+                            alignItems: 'center',
+                            display: 'flex',
+                            height: '25px',
+                            color: 'black',
+                            fontWeight: 600,
+                          },
+                          width: '100%',
+                        }}
+                        label='1º lugar'
+                      />
+                    </div>
+                    <div>
+                      <BlackTextField
+                        required
+                        type='number'
+                        onChange={event => {
+                          setPontuacaoSegundo(event.target.value)
+                        }}
+                        value={pontuacaoSegundo}
+                        inputProps={{ min: 0 }}
+                        sx={{
+                          '.MuiFormLabel-root': {
+                            alignItems: 'center',
+                            display: 'flex',
+                            height: '25px',
+                            color: 'black',
+                            fontWeight: 600,
+                          },
+                          width: '100%',
+                        }}
+                        label='2º lugar'
+                      />
+                    </div>
+                    <div>
+                      <BlackTextField
+                        required
+                        type='number'
+                        onChange={event => {
+                          setPontuacaoTerceiro(event.target.value)
+                        }}
+                        value={pontuacaoTerceiro}
+                        inputProps={{ min: 0 }}
+                        sx={{
+                          '.MuiFormLabel-root': {
+                            alignItems: 'center',
+                            display: 'flex',
+                            height: '25px',
+                            color: 'black',
+                            fontWeight: 600,
+                          },
+                          width: '100%',
+                        }}
+                        label='3º lugar'
+                      />
+                    </div>
+                    <div>
+                      <BlackTextField
+                        required
+                        type='number'
+                        onChange={event => {
+                          setPontuacaoQuarto(event.target.value)
+                        }}
+                        value={pontuacaoQuarto}
+                        inputProps={{ min: 0 }}
+                        sx={{
+                          '.MuiFormLabel-root': {
+                            alignItems: 'center',
+                            display: 'flex',
+                            height: '25px',
+                            color: 'black',
+                            fontWeight: 600,
+                          },
+                          width: '100%',
+                        }}
+                        label='4º lugar'
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className='flex flex-col w-full gap-5  md:flex-col'>
+                  <span className={`${tomorrow.className} text-lg flex`}>
+                    PONTUAÇÃO
+                  </span>
+                  <div className='flex w-full'>
+                    <BlackTextField
+                      required
+                      type='number'
+                      inputProps={{ min: 0 }}
+                      onChange={event => {
+                        setPontuacaoMaxima(event.target.value)
+                      }}
+                      value={pontuacaoMaxima}
+                      sx={{
+                        '.MuiFormLabel-root': {
+                          alignItems: 'center',
+                          display: 'flex',
+                          height: '25px',
+                          color: 'black',
+                          fontWeight: 600,
+                        },
+                        width: '100%',
+                      }}
+                      label='Pontuação Máxima'
+                    />
+                  </div>
+                </div>
+              )}
+            </>
           ) : (
             <div className='flex w-full gap-5'>
               <div className='flex flex-col w-1/2 gap-5 my-5 md:flex-col'>
