@@ -44,6 +44,13 @@ interface PropsSetores {
   responsavel: string
   created_at: Date
 }
+interface PropsLotes {
+  id: number
+  numero_lote: string
+  horario_inicio: string
+  horario_fim: string
+  created_at: Date
+}
 
 const theme = createTheme({
   palette: {
@@ -64,6 +71,7 @@ const Home = () => {
   const [buscando, setBuscando] = useState('')
 
   const [setor, setSetor] = useState<PropsSetores | null>(null)
+  const [lote, setLote] = useState<PropsLotes | null>(null)
   const [filteredTarefas, setFilteredTarefas] = useState<PropsTarefas[]>(
     []
   )
@@ -120,6 +128,7 @@ const Home = () => {
                 allTarefas={allTarefas}
                 setFilteredTarefas={setFilteredTarefas}
                 setSetor={setSetor}
+                setLote={setLote}
               />
             </div>
             <div className='flex items-center justify-end text-lg gap-10'>
@@ -163,7 +172,7 @@ const Home = () => {
 
           <div className='flex flex-col items-center justify-center w-full md:flex-row'>
             {listMode ? (
-              buscando === '' && setor === null ? (
+              buscando === '' && setor === null && lote === null ? (
                 allTarefas.length ? (
                   <div className='w-full flex flex-col gap-2'>
                     {allTarefas.map(tarefas => (
@@ -188,7 +197,7 @@ const Home = () => {
                     </span>
                   </div>
                 )
-              ) : (buscando || setor) && filteredTarefas.length ? (
+              ) : (buscando || setor || lote) && filteredTarefas.length ? (
                 <div className='w-full flex flex-col gap-2'>
                   {filteredTarefas.map(tarefas => (
                     <CardTarefa
@@ -210,7 +219,7 @@ const Home = () => {
                   <span className='m-5'>Nenhum resultado encontrado.</span>
                 </div>
               )
-            ) : buscando === '' && setor === null ? (
+            ) : buscando === '' && setor === null && lote === null ? (
               allTarefas.length ? (
                 <div className='grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 '>
                   {allTarefas.map(tarefas => (
@@ -235,7 +244,7 @@ const Home = () => {
                   </span>
                 </div>
               )
-            ) : (buscando || setor) && filteredTarefas.length ? (
+            ) : (buscando || setor || lote) && filteredTarefas.length ? (
               <div className='grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 '>
                 {filteredTarefas.map(tarefas => (
                   <CardTarefa
