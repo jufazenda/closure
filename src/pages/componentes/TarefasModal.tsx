@@ -30,6 +30,7 @@ interface PropsTarefasModal {
   setLoading: Dispatch<SetStateAction<boolean>>
   idTarefa: number
   allSetores: PropsSetores | null
+  lotes: PropsLotes | null
 }
 
 interface PropsSetores {
@@ -73,6 +74,14 @@ interface ModalComponents {
   [key: string]: JSX.Element
 }
 
+interface PropsLotes {
+  id: number
+  numero_lote: string
+  horario_inicio: string
+  horario_fim: string
+  created_at: Date
+}
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -110,6 +119,7 @@ const TarefasModal = ({
   setLoading,
   idTarefa,
   allSetores,
+  lotes,
 }: PropsTarefasModal) => {
   const [forcask, setForcask] = useState<number | string>('')
   const [aguia, setAguia] = useState<number | string>('')
@@ -158,7 +168,6 @@ const TarefasModal = ({
 
   const [respostaCharada, setRespostaCharada] = useState<string>('')
   const [observacao, setObservacao] = useState<string>('')
-  const [resultadoById, setResultadoById] = useState<PropsResultado[]>([])
   const [horarioPadrao, setHorarioPadrao] = useState<string>('')
 
   const [notificationProps, setNotificationProps] = useState({
@@ -175,11 +184,6 @@ const TarefasModal = ({
   const [editModalActive, setEditModalActive] = useState(false)
 
   const [modalComponentName, setModalComponentName] = useState('')
-
-  const openModalEdit = (modalName: string) => {
-    setEditModalActive(true)
-    setModalComponentName(modalName)
-  }
 
   const chooseModal = (modalName: string) => {
     const components: ModalComponents = {
@@ -222,6 +226,7 @@ const TarefasModal = ({
     salvarResultadoAguia()
     salvarResultadPoups()
     salvarResultadoMed()
+    setLoading(!loading)
 
     setNotificationProps({
       importantMessage: 'Sucesso!',
@@ -698,6 +703,7 @@ const TarefasModal = ({
               setorTarefa={
                 allSetores?.id === tarefas?.id_setor ? allSetores : null
               }
+              loteTarefa={lotes?.id === tarefas?.id_lote ? lotes : null}
             />
           ) : (
             <>
@@ -735,9 +741,7 @@ const TarefasModal = ({
                 </div>
                 <div className='flex flex-col justify-between w-full items-center md:flex-row'>
                   <span className={`${tomorrow.className} text-lg flex`}>
-                    {tarefas?.id_lote
-                      ? `Lote ${tarefas?.id_lote} `
-                      : horarioPadrao}
+                    {tarefas?.id_lote ? lotes?.numero_lote : horarioPadrao}
                   </span>
                   <div>
                     <span className={`${tomorrow.className} text-md flex`}>

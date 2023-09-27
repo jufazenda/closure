@@ -5,17 +5,12 @@ import supabase from './api/supabase'
 import Head from 'next/head'
 import AdicionarTarefa from './componentes/AdicionarTarefaModal'
 
-import { AddCircle, Apps, Reorder } from '@mui/icons-material'
+import { AddCircle } from '@mui/icons-material'
 import CardTarefa from './componentes/CardTarefa'
 
 import { Tomorrow } from 'next/font/google'
 import SearchBox from './componentes/SearchBox'
-import {
-  ButtonGroup,
-  IconButton,
-  Tooltip,
-  createTheme,
-} from '@mui/material'
+import { createTheme } from '@mui/material'
 import { ThemeProvider } from '@emotion/react'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
@@ -140,6 +135,8 @@ const Home = () => {
                 Adicionar
               </button>
             </div>
+            {/* ---- para ver em modos diferentes ---- 
+            
             <div className='flex items-center justify-end text-lg gap-3'>
               <ButtonGroup
                 variant='contained'
@@ -167,7 +164,7 @@ const Home = () => {
                   </IconButton>
                 </Tooltip>
               </ButtonGroup>
-            </div>
+            </div> */}
           </div>
 
           <div className='flex flex-col items-center justify-center w-full md:flex-row'>

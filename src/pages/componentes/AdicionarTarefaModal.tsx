@@ -29,6 +29,7 @@ interface PropsAdicionarTarefa {
   isEditing?: boolean
   idTarefa?: number
   setorTarefa?: PropsSetores | null
+  loteTarefa?: PropsLotes | null
 }
 
 interface PropsTarefas {
@@ -43,6 +44,14 @@ interface PropsTarefas {
   pontuacaoTerceiro: number
   pontuacaoQuarto: number
   horario: string
+}
+
+interface PropsLotes {
+  id: number
+  numero_lote: string
+  horario_inicio: string
+  horario_fim: string
+  created_at: Date
 }
 interface PropsSetores {
   id: number
@@ -77,6 +86,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
   isEditing,
   idTarefa,
   setorTarefa,
+  loteTarefa,
 }) => {
   const [allSetores, setAllSetores] = useState<PropsSetores[]>([])
   const [tarefaEditar, setTarefaEditar] = useState<PropsTarefas | null>(
@@ -87,7 +97,8 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
   const [tarefa, setTarefa] = useState<string>('')
   const [linkTarefa, setLinkTarefa] = useState<string>('')
   const [numero, setNumero] = useState<number | string>(0)
-  const [lote, setLote] = useState<number | string>('')
+  const [lote, setLote] = useState<PropsLotes | null>(null)
+  const [lotes, setLotes] = useState<PropsLotes[]>([])
   const [horario, setHorario] = useState('')
   const [pontuacaoMaxima, setPontuacaoMaxima] = useState<number | string>(
     0
@@ -117,7 +128,21 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
     fetchDataSetores()
     fetchDataTarefas()
     fetchDataTarefaById()
+    fetchDataLotes()
   }, [])
+
+  const fetchDataLotes = async () => {
+    const { data, error } = await supabase
+      .from('Lote')
+      .select('*')
+      .order('id')
+
+    if (error) {
+      console.error('Erro ao buscar dados tarefas:', error.message)
+      return
+    }
+    setLotes(data)
+  }
 
   const fetchDataSetores = async () => {
     const { data, error } = await supabase
@@ -161,7 +186,9 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
     setTarefa(data.tarefa)
     setLinkTarefa(data.link)
     setNumero(data.numero_tarefa)
-    setLote(data.id_lote)
+    if (loteTarefa) {
+      setLote(loteTarefa)
+    }
     if (setorTarefa) {
       setSetor(setorTarefa)
     }
@@ -202,7 +229,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
           tarefa: tarefa,
           link: linkTarefa,
           numero_tarefa: numero,
-          id_lote: lote || null,
+          id_lote: lote?.id || null,
           id_setor: setor?.id,
           pontuacaoMaxima: pontuacaoMaxima ? pontuacaoMaxima : null,
           pontuacaoPrimeiro: pontuacaoPrimeiro ? pontuacaoPrimeiro : null,
@@ -243,7 +270,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
           tarefa: tarefa,
           link: linkTarefa,
           numero_tarefa: numero,
-          id_lote: lote || null,
+          id_lote: lote?.id || null,
           id_setor: setor?.id,
           pontuacaoMaxima: pontuacaoMaxima ? pontuacaoMaxima : null,
           pontuacaoPrimeiro: pontuacaoPrimeiro ? pontuacaoPrimeiro : null,
@@ -771,26 +798,35 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                   ENTREGA
                 </span>
                 <div className='w-full'>
-                  <BlackTextField
-                    required
-                    color='primary'
-                    type='number'
-                    onChange={event => {
-                      setLote(event.target.value)
+                  <Autocomplete
+                    options={lotes}
+                    getOptionLabel={option => option.numero_lote}
+                    ListboxProps={{
+                      style: { maxHeight: 190, fontFamily: 'Montserrat' },
+                    }}
+                    size='medium'
+                    onChange={(event, newValue) => {
+                      setLote(newValue)
                     }}
                     value={lote}
-                    inputProps={{ min: 0, max: 4 }}
-                    sx={{
-                      '.MuiFormLabel-root': {
-                        alignItems: 'center',
-                        display: 'flex',
-                        height: '25px',
-                        color: 'black',
-                        fontWeight: 600,
-                      },
-                      width: '100%',
-                    }}
-                    label='Lote'
+                    renderInput={params => (
+                      <BlackTextField
+                        {...params}
+                        label='Lote'
+                        variant='outlined'
+                        sx={{
+                          '.MuiFormLabel-root': {
+                            alignItems: 'center',
+                            display: 'flex',
+                            height: '25px',
+                            color: 'black',
+                            fontWeight: 600,
+                            fontFamily: 'Montserrat',
+                          },
+                          width: '100%',
+                        }}
+                      />
+                    )}
                   />
                 </div>
               </div>

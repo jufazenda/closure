@@ -17,7 +17,6 @@ interface PropsEquipesResultado {
 }
 
 const Resultado = () => {
-  const [loading, setLoading] = useState(false)
 
   const [allResultado, setAllResultado] = useState<
     PropsEquipesResultado[]
