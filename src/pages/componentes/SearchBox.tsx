@@ -34,12 +34,21 @@ interface PropsSetores {
   created_at: Date
 }
 
+interface PropsLotes {
+  id: number
+  numero_lote: string
+  horario_inicio: string
+  horario_fim: string
+  created_at: Date
+}
+
 interface SearchBoxProps {
   buscando: string
   allTarefas: PropsTarefas[]
   setBuscando: (value: string) => void
   setFilteredTarefas: (value: PropsTarefas[]) => void
   setSetor: (value: PropsSetores | null) => void
+  setLote: (value: PropsLotes | null) => void
 }
 
 const theme = createTheme({
@@ -74,8 +83,23 @@ const SearchBox = ({
   setBuscando,
   setFilteredTarefas,
   setSetor,
+  setLote,
 }: SearchBoxProps) => {
   const [allSetores, setAllSetores] = useState<PropsSetores[]>([])
+  const [lotes, setLotes] = useState<PropsLotes[]>([])
+
+  const fetchDataLotes = async () => {
+    const { data, error } = await supabase
+      .from('Lote')
+      .select('*')
+      .order('id')
+
+    if (error) {
+      console.error('Erro ao buscar dados tarefas:', error.message)
+      return
+    }
+    setLotes(data)
+  }
 
   const fetchDataSetores = async () => {
     const { data, error } = await supabase
@@ -112,14 +136,25 @@ const SearchBox = ({
     }
   }
 
+  const handleSearchLote = (searchTerm: PropsLotes | null) => {
+    setLote(searchTerm)
+
+    if (searchTerm) {
+      setFilteredTarefas(
+        allTarefas?.filter(tarefa => tarefa.id_lote == searchTerm.id)
+      )
+    }
+  }
+
   useEffect(() => {
     fetchDataSetores()
+    fetchDataLotes()
   }, [])
 
   return (
     <ThemeProvider theme={theme}>
       <div className='w-full flex items-center justify-end'>
-        <div className='w-full flex items-center'>
+        <div className='w-full flex items-center gap-1'>
           <BlackTextField
             required
             type='String'
@@ -178,6 +213,36 @@ const SearchBox = ({
                     height: '25px',
                     color: 'black',
                     fontWeight: 600,
+                  },
+                  width: '200px',
+                }}
+              />
+            )}
+          />
+          <Divider />
+          <Autocomplete
+            options={lotes}
+            getOptionLabel={option => option.numero_lote}
+            ListboxProps={{
+              style: { maxHeight: 190, fontFamily: 'Montserrat' },
+            }}
+            size='medium'
+            onChange={(event, newValue) => {
+              handleSearchLote(newValue)
+            }}
+            renderInput={params => (
+              <BlackTextField
+                {...params}
+                placeholder='Lote'
+                variant='outlined'
+                sx={{
+                  '.MuiFormLabel-root': {
+                    alignItems: 'center',
+                    display: 'flex',
+                    height: '25px',
+                    color: 'black',
+                    fontWeight: 600,
+                    fontFamily: 'Montserrat',
                   },
                   width: '200px',
                 }}

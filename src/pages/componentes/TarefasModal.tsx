@@ -1219,7 +1219,7 @@ const TarefasModal = ({
                     <BlackTextField
                       type='String'
                       multiline
-                      rows={3}
+                      rows={4}
                       value={observacao}
                       onChange={event => {
                         setObservacao(event.target.value)
