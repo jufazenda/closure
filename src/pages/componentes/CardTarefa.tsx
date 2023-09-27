@@ -35,7 +35,45 @@ interface ModalComponents {
   [key: string]: JSX.Element
 }
 
+interface PropsLotes {
+  id: number
+  numero_lote: string
+  horario_inicio: string
+  horario_fim: string
+  created_at: Date
+}
+
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
+
+const Loop = () => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    width='30'
+    height='80'
+    viewBox='0 0 60 80'
+    fill='none'
+  >
+    <path
+      d='M30 10.9091V0L15 14.5455L30 29.0909V18.1818C42.4125 18.1818 52.5 27.9636 52.5 40C52.5 43.6727 51.5625 47.1636 49.875 50.1818L55.35 55.4909C58.275 51.0182 60 45.7091 60 40C60 23.9273 46.575 10.9091 30 10.9091ZM30 61.8182C17.5875 61.8182 7.5 52.0364 7.5 40C7.5 36.3273 8.4375 32.8364 10.125 29.8182L4.65 24.5091C1.725 28.9818 0 34.2909 0 40C0 56.0727 13.425 69.0909 30 69.0909V80L45 65.4545L30 50.9091V61.8182Z'
+      fill='rgba(250, 218, 0, 200)'
+    />
+  </svg>
+)
+
+const Check = () => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    width='30'
+    height='60'
+    viewBox='0 0 60 60'
+    fill='none'
+  >
+    <path
+      d='M30 0C13.44 0 0 13.44 0 30C0 46.56 13.44 60 30 60C46.56 60 60 46.56 60 30C60 13.44 46.56 0 30 0ZM24 45L9 30L13.23 25.77L24 36.51L46.77 13.74L51 18L24 45Z'
+      fill='rgba(31, 170, 77, 1)'
+    />
+  </svg>
+)
 
 const CardTarefa = ({
   tarefas,
@@ -47,12 +85,31 @@ const CardTarefa = ({
   const [horario, setHorario] = useState('')
   const [activeModal, setActiveModal] = useState<boolean>(false)
   const [modalComponentName, setModalComponentName] = useState('')
+  const [resultadoOk, setResultadoOk] = useState(false)
+
+  const [lotes, setLotes] = useState<PropsLotes | null>(null)
 
   useEffect(() => {
     fetchData()
     ajustarHorario()
-  }, [])
+    buscaResultado()
+    fetchDataLotes()
+  }, [tarefas])
 
+  const fetchDataLotes = async () => {
+    const { data, error } = await supabase
+      .from('Lote')
+      .select('*')
+      .order('id')
+
+    if (error) {
+      console.error('Erro ao buscar dados tarefas:', error.message)
+      return
+    } else {
+      const loteTarefa = data.find(lotes => lotes?.id === tarefas?.id_lote)
+      setLotes(loteTarefa)
+    }
+  }
   const fetchData = async () => {
     const { data, error } = await supabase
       .from('Setores')
@@ -87,6 +144,25 @@ const CardTarefa = ({
     return String(tarefas?.numero_tarefa).padStart(3, '0')
   }
 
+  const buscaResultado = async () => {
+    const { data, error } = await supabase
+      .from('Resultado')
+      .select('*')
+      .eq('id_tarefa', tarefas.id)
+      .single()
+
+    if (error) {
+      console.error('Erro ao buscar observação:', error.message)
+      return
+    }
+
+    if (data.forcask || data.aguia || data.poupanca || data.medonhos) {
+      setResultadoOk(true)
+    } else {
+      setResultadoOk(false)
+    }
+  }
+
   const getColorClass = () => {
     switch (tarefas?.id_setor) {
       case 1:
@@ -108,6 +184,14 @@ const CardTarefa = ({
     }
   }
 
+  const getColorResult = () => {
+    if (resultadoOk) {
+      return 'bg-padrao-green-500'
+    } else {
+      return 'bg-padrao-yellow-500'
+    }
+  }
+
   const openModal = (modalName: string) => {
     setActiveModal(true)
     setModalComponentName(modalName)
@@ -125,6 +209,7 @@ const CardTarefa = ({
           setLoading={setLoading}
           idTarefa={tarefas?.id}
           allSetores={allSetores}
+          lotes={lotes}
         />
       ),
     }
@@ -134,9 +219,9 @@ const CardTarefa = ({
   return (
     <>
       {listMode ? (
-        <div>
+        <div className='flex w-full gap-2'>
           <span
-            className='flex cursor-pointer'
+            className='flex w-full cursor-pointer gap-2'
             onClick={() => openModal('Informacoes')}
           >
             <div
@@ -153,8 +238,8 @@ const CardTarefa = ({
                     {tarefas?.tarefa}
                   </div>
                 </span>
-                <span className='flex w-1/12 justify-center'>
-                  {horario ? horario : `Lote ${tarefas?.id_lote}`}
+                <span className='flex w-2/12 justify-center'>
+                  {horario ? horario : lotes?.numero_lote}
                 </span>
                 <span
                   className={`${tomorrow.className} m-2 w-1/12 justify-center hidden md:flex`}
@@ -164,6 +249,11 @@ const CardTarefa = ({
               </div>
             </div>
           </span>
+          <div
+            className={`${getColorResult()} w-5% h-40 md:h-16 flex text-black rounded-lg justify-center items-center`}
+          >
+            {resultadoOk ? <Check /> : <Loop />}
+          </div>
           {activeModal && chooseModal(modalComponentName)}
         </div>
       ) : (
