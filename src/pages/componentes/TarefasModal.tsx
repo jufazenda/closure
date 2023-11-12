@@ -512,7 +512,7 @@ const TarefasModal = ({
     if (tarefas?.pontuacaoMaxima) {
       if (tarefaCumpridaSK) {
         setForcask(
-          Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoSK)
+          Number(tarefas?.pontuacaoMaxima) - Number(bonificacaoSK)
         )
       } else if (bonificacaoSK) {
         setForcask(Number(bonificacaoSK))
@@ -522,7 +522,7 @@ const TarefasModal = ({
 
       if (tarefaCumpridaAguia) {
         setAguia(
-          Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoMaxima) - Number(bonificacaoAguia)
         )
       } else if (bonificacaoAguia) {
         setAguia(Number(bonificacaoAguia))
@@ -532,7 +532,7 @@ const TarefasModal = ({
 
       if (tarefaCumpridaPoups) {
         setPoupanca(
-          Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoMaxima) - Number(bonificacaoPoups)
         )
       } else if (bonificacaoPoups) {
         setPoupanca(Number(bonificacaoPoups))
@@ -542,7 +542,7 @@ const TarefasModal = ({
 
       if (tarefaCumpridaMed) {
         setMedonhos(
-          Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoMaxima) - Number(bonificacaoMedonhos)
         )
       } else if (bonificacaoMedonhos) {
         setMedonhos(Number(bonificacaoMedonhos))
@@ -552,19 +552,19 @@ const TarefasModal = ({
     } else {
       if (forcaskColocacao?.id === 1) {
         setForcask(
-          Number(tarefas?.pontuacaoPrimeiro) + Number(bonificacaoSK)
+          Number(tarefas?.pontuacaoPrimeiro) - Number(bonificacaoSK)
         )
       } else if (forcaskColocacao?.id === 2) {
         setForcask(
-          Number(tarefas?.pontuacaoSegundo) + Number(bonificacaoSK)
+          Number(tarefas?.pontuacaoSegundo) - Number(bonificacaoSK)
         )
       } else if (forcaskColocacao?.id === 3) {
         setForcask(
-          Number(tarefas?.pontuacaoTerceiro) + Number(bonificacaoSK)
+          Number(tarefas?.pontuacaoTerceiro) - Number(bonificacaoSK)
         )
       } else if (forcaskColocacao?.id === 4) {
         setForcask(
-          Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoSK)
+          Number(tarefas?.pontuacaoQuarto) - Number(bonificacaoSK)
         )
       } else if (forcaskColocacao?.id === 5 && bonificacaoSK) {
         setForcask(Number(bonificacaoSK))
@@ -574,19 +574,19 @@ const TarefasModal = ({
 
       if (aguiaColocacao?.id === 1) {
         setAguia(
-          Number(tarefas?.pontuacaoPrimeiro) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoPrimeiro) - Number(bonificacaoAguia)
         )
       } else if (aguiaColocacao?.id === 2) {
         setAguia(
-          Number(tarefas?.pontuacaoSegundo) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoSegundo) - Number(bonificacaoAguia)
         )
       } else if (aguiaColocacao?.id === 3) {
         setAguia(
-          Number(tarefas?.pontuacaoTerceiro) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoTerceiro) - Number(bonificacaoAguia)
         )
       } else if (aguiaColocacao?.id === 4) {
         setAguia(
-          Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoQuarto) - Number(bonificacaoAguia)
         )
       } else if (aguiaColocacao?.id === 5 && bonificacaoAguia) {
         setAguia(Number(bonificacaoAguia))
@@ -596,19 +596,19 @@ const TarefasModal = ({
 
       if (poupancaColocacao?.id === 1) {
         setPoupanca(
-          Number(tarefas?.pontuacaoPrimeiro) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoPrimeiro) - Number(bonificacaoPoups)
         )
       } else if (poupancaColocacao?.id === 2) {
         setPoupanca(
-          Number(tarefas?.pontuacaoSegundo) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoSegundo) - Number(bonificacaoPoups)
         )
       } else if (poupancaColocacao?.id === 3) {
         setPoupanca(
-          Number(tarefas?.pontuacaoTerceiro) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoTerceiro) - Number(bonificacaoPoups)
         )
       } else if (poupancaColocacao?.id === 4) {
         setPoupanca(
-          Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoQuarto) - Number(bonificacaoPoups)
         )
       } else if (poupancaColocacao?.id === 5 && bonificacaoPoups) {
         setPoupanca(Number(bonificacaoPoups))
@@ -618,19 +618,19 @@ const TarefasModal = ({
 
       if (medonhosColocacao?.id === 1) {
         setMedonhos(
-          Number(tarefas?.pontuacaoPrimeiro) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoPrimeiro) - Number(bonificacaoMedonhos)
         )
       } else if (medonhosColocacao?.id === 2) {
         setMedonhos(
-          Number(tarefas?.pontuacaoSegundo) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoSegundo) - Number(bonificacaoMedonhos)
         )
       } else if (medonhosColocacao?.id === 3) {
         setMedonhos(
-          Number(tarefas?.pontuacaoTerceiro) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoTerceiro) - Number(bonificacaoMedonhos)
         )
       } else if (medonhosColocacao?.id === 4) {
         setMedonhos(
-          Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoQuarto) - Number(bonificacaoMedonhos)
         )
       } else if (medonhosColocacao?.id === 5 && bonificacaoMedonhos) {
         setMedonhos(Number(bonificacaoMedonhos))
@@ -830,7 +830,7 @@ const TarefasModal = ({
                               },
                               width: '100%',
                             }}
-                            label='Bonificação'
+                            label='Penalidade'
                           />
                         </div>
                         <div className='flex flex-col items-center justify-center gap-5'>
@@ -862,7 +862,7 @@ const TarefasModal = ({
                               },
                               width: '100%',
                             }}
-                            label='Bonificação'
+                            label='Penalidade'
                           />
                         </div>
                         <div className='flex flex-col items-center justify-center gap-5 '>
@@ -894,7 +894,7 @@ const TarefasModal = ({
                               },
                               width: '100%',
                             }}
-                            label='Bonificação'
+                            label='Penalidade'
                           />
                         </div>
                         <div className='flex flex-col items-center justify-center gap-5'>
@@ -928,7 +928,7 @@ const TarefasModal = ({
                               },
                               width: '100%',
                             }}
-                            label='Bonificação'
+                            label='Penalidade'
                           />
                         </div>
                       </div>
@@ -1001,7 +1001,7 @@ const TarefasModal = ({
                               },
                               width: '100%',
                             }}
-                            label='Bonificação'
+                            label='Penalidade'
                           />
                         </div>
                         <div className='flex flex-col items-center justify-center gap-5'>
@@ -1071,7 +1071,7 @@ const TarefasModal = ({
                               },
                               width: '100%',
                             }}
-                            label='Bonificação'
+                            label='Penalidade'
                           />
                         </div>
                         <div className='flex flex-col items-center justify-center gap-5 '>
@@ -1141,7 +1141,7 @@ const TarefasModal = ({
                               },
                               width: '100%',
                             }}
-                            label='Bonificação'
+                            label='Penalidade'
                           />
                         </div>
                         <div className='flex flex-col items-center justify-center gap-5 '>
@@ -1213,7 +1213,7 @@ const TarefasModal = ({
                               },
                               width: '100%',
                             }}
-                            label='Bonificação'
+                            label='Penalidade'
                           />
                         </div>
                       </div>
