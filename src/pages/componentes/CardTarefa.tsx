@@ -156,7 +156,15 @@ const CardTarefa = ({
       return
     }
 
+    const zerada = await supabase
+      .from('Tarefas')
+      .select('status')
+      .eq('id', tarefas.id)
+      .single()
+
     if (data.forcask || data.aguia || data.poupanca || data.medonhos) {
+      setResultadoOk(true)
+    } else if (zerada.data?.status) {
       setResultadoOk(true)
     } else {
       setResultadoOk(false)

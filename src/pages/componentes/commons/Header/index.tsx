@@ -50,7 +50,7 @@ const Header = () => {
           Resultado
         </Link>
         <Link
-          href={'https://www.equipesherlock.com.br/gincanas/1'}
+          href={'http://www.armadadedumbledore.com.br/'}
           target='_blank'
           className='mr-8 uppercase hover:text-padrao-purple-300'
         >

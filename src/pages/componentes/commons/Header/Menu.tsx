@@ -50,7 +50,7 @@ const Menu = ({ isVisible, onClose }: MenuProps) => {
             Resultado
           </Link>
           <Link
-            href={'https://www.equipesherlock.com.br/gincanas/1'}
+            href={'http://www.armadadedumbledore.com.br/'}
             target='_blank'
             className='uppercase hover:text-padrao-purple-300'
             onClick={onClose}

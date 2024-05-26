@@ -447,27 +447,64 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                 <span className={`${tomorrow.className} text-lg flex`}>
                   ENTREGA
                 </span>
-                <div className='w-full'>
-                  <BlackTextField
-                    required
-                    color='primary'
-                    type='time'
-                    onChange={event => {
-                      setHorario(event.target.value)
-                    }}
-                    value={horario}
-                    sx={{
-                      '.MuiFormLabel-root': {
-                        alignItems: 'center',
-                        display: 'flex',
-                        height: '25px',
-                        color: 'black',
-                        fontWeight: 600,
-                      },
-                      width: '100%',
-                    }}
-                    label='Horário'
-                  />
+                <div className='w-full flex gap-2'>
+                  <div className='w-full'>
+                    <BlackTextField
+                      required
+                      color='primary'
+                      type='time'
+                      onChange={event => {
+                        setHorario(event.target.value)
+                      }}
+                      value={horario}
+                      sx={{
+                        '.MuiFormLabel-root': {
+                          alignItems: 'center',
+                          display: 'flex',
+                          height: '25px',
+                          color: 'black',
+                          fontWeight: 600,
+                        },
+                        width: '100%',
+                      }}
+                      label='Horário'
+                    />
+                  </div>
+                  <div className='w-full'>
+                    <Autocomplete
+                      options={lotes}
+                      getOptionLabel={option => option.numero_lote}
+                      ListboxProps={{
+                        style: {
+                          maxHeight: 190,
+                          fontFamily: 'Montserrat',
+                        },
+                      }}
+                      size='medium'
+                      onChange={(event, newValue) => {
+                        setLote(newValue)
+                      }}
+                      value={lote}
+                      renderInput={params => (
+                        <BlackTextField
+                          {...params}
+                          label='Lote'
+                          variant='outlined'
+                          sx={{
+                            '.MuiFormLabel-root': {
+                              alignItems: 'center',
+                              display: 'flex',
+                              height: '25px',
+                              color: 'black',
+                              fontWeight: 600,
+                              fontFamily: 'Montserrat',
+                            },
+                            width: '100%',
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
               <div className='flex flex-col md:flex-col '>
@@ -572,27 +609,64 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                 <span className={`${tomorrow.className} text-lg flex`}>
                   ENTREGA
                 </span>
-                <div className='w-full'>
-                  <BlackTextField
-                    required
-                    color='primary'
-                    type='time'
-                    onChange={event => {
-                      setHorario(event.target.value)
-                    }}
-                    value={horario}
-                    sx={{
-                      '.MuiFormLabel-root': {
-                        alignItems: 'center',
-                        display: 'flex',
-                        height: '25px',
-                        color: 'black',
-                        fontWeight: 600,
-                      },
-                      width: '100%',
-                    }}
-                    label='Horário'
-                  />
+                <div className='w-full flex gap-2'>
+                  <div className='w-full'>
+                    <BlackTextField
+                      required
+                      color='primary'
+                      type='time'
+                      onChange={event => {
+                        setHorario(event.target.value)
+                      }}
+                      value={horario}
+                      sx={{
+                        '.MuiFormLabel-root': {
+                          alignItems: 'center',
+                          display: 'flex',
+                          height: '25px',
+                          color: 'black',
+                          fontWeight: 600,
+                        },
+                        width: '100%',
+                      }}
+                      label='Horário'
+                    />
+                  </div>
+                  <div className='w-full'>
+                    <Autocomplete
+                      options={lotes}
+                      getOptionLabel={option => option.numero_lote}
+                      ListboxProps={{
+                        style: {
+                          maxHeight: 190,
+                          fontFamily: 'Montserrat',
+                        },
+                      }}
+                      size='medium'
+                      onChange={(event, newValue) => {
+                        setLote(newValue)
+                      }}
+                      value={lote}
+                      renderInput={params => (
+                        <BlackTextField
+                          {...params}
+                          label='Lote'
+                          variant='outlined'
+                          sx={{
+                            '.MuiFormLabel-root': {
+                              alignItems: 'center',
+                              display: 'flex',
+                              height: '25px',
+                              color: 'black',
+                              fontWeight: 600,
+                              fontFamily: 'Montserrat',
+                            },
+                            width: '100%',
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
               <div className='flex flex-col w-1/2 gap-5 my-5 md:flex-col'>

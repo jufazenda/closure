@@ -1,7 +1,5 @@
 import { Search } from '@mui/icons-material'
-
 import React, { useState, useEffect } from 'react'
-
 import {
   Autocomplete,
   Divider,
@@ -87,6 +85,10 @@ const SearchBox = ({
 }: SearchBoxProps) => {
   const [allSetores, setAllSetores] = useState<PropsSetores[]>([])
   const [lotes, setLotes] = useState<PropsLotes[]>([])
+  const [selectedSetor, setSelectedSetor] = useState<PropsSetores | null>(
+    null
+  )
+  const [selectedLote, setSelectedLote] = useState<PropsLotes | null>(null)
 
   const fetchDataLotes = async () => {
     const { data, error } = await supabase
@@ -116,34 +118,45 @@ const SearchBox = ({
 
   const handleSearch = (searchTerm: string) => {
     setBuscando(searchTerm)
-
-    setFilteredTarefas(
-      allTarefas?.filter(
-        tarefa =>
-          tarefa.numero_tarefa.toString().includes(searchTerm) ||
-          tarefa.tarefa.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    )
+    filterTarefas(searchTerm, selectedSetor, selectedLote)
   }
 
   const handleSearchSetor = (searchTerm: PropsSetores | null) => {
     setSetor(searchTerm)
-
-    if (searchTerm) {
-      setFilteredTarefas(
-        allTarefas?.filter(tarefa => tarefa.id_setor == searchTerm.id)
-      )
-    }
+    setSelectedSetor(searchTerm)
+    filterTarefas(buscando, searchTerm, selectedLote)
   }
 
   const handleSearchLote = (searchTerm: PropsLotes | null) => {
     setLote(searchTerm)
+    setSelectedLote(searchTerm)
+    filterTarefas(buscando, selectedSetor, searchTerm)
+  }
+
+  const filterTarefas = (
+    searchTerm: string,
+    setor: PropsSetores | null,
+    lote: PropsLotes | null
+  ) => {
+    let filtered = allTarefas
 
     if (searchTerm) {
-      setFilteredTarefas(
-        allTarefas?.filter(tarefa => tarefa.id_lote == searchTerm.id)
+      filtered = filtered.filter(
+        tarefa =>
+          tarefa.numero_tarefa.toString().includes(searchTerm) ||
+          tarefa.tarefa.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
+
+    if (setor) {
+      filtered = filtered.filter(tarefa => tarefa.id_setor === setor.id)
+    }
+
+    if (lote) {
+      filtered = filtered.filter(tarefa => tarefa.id_lote === lote.id)
+    }
+
+    setFilteredTarefas(filtered)
   }
 
   useEffect(() => {

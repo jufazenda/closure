@@ -126,6 +126,8 @@ const TarefasModal = ({
   const [poupanca, setPoupanca] = useState<number | string>('')
   const [medonhos, setMedonhos] = useState<number | string>('')
 
+  const [tarefaFinalizada, setTarefaFinalizada] = useState(false)
+
   const [tarefaCumpridaSK, setTarefaCumpridaSK] = useState(false)
 
   const [tarefaCumpridaAguia, setTarefaCumpridaAguia] = useState(false)
@@ -154,6 +156,17 @@ const TarefasModal = ({
       id: 0,
       label: '',
     })
+
+  const [penalidadeSK, setPenalidadeSK] = useState<number | string>('')
+  const [penalidadeAguia, setPenalidadeAguia] = useState<number | string>(
+    ''
+  )
+  const [penalidadePoups, setPenalidadePoups] = useState<number | string>(
+    ''
+  )
+  const [penalidadeMedonhos, setPenalidadeMedonhos] = useState<
+    number | string
+  >('')
 
   const [bonificacaoSK, setBonificacaoSK] = useState<number | string>('')
   const [bonificacaoAguia, setBonificacaoAguia] = useState<
@@ -251,6 +264,7 @@ const TarefasModal = ({
     if (data) {
       setObservacao(data.observacao || '')
       setRespostaCharada(data.respostaCharada || '')
+      setTarefaFinalizada(data.status || false)
     }
   }
 
@@ -276,6 +290,7 @@ const TarefasModal = ({
       .update({
         respostaCharada: respostaCharada,
         observacao: observacao,
+        status: tarefaFinalizada,
       })
       .eq('id', idTarefa)
     if (error) {
@@ -291,6 +306,7 @@ const TarefasModal = ({
         colocacao: forcaskColocacao?.id || null,
         tarefaCumprida: tarefas?.pontuacaoMaxima ? tarefaCumpridaSK : null,
         bonificacao: Number(bonificacaoSK),
+        penalidade: Number(penalidadeSK),
       })
       .eq('id_tarefa', idTarefa)
 
@@ -309,6 +325,7 @@ const TarefasModal = ({
           ? tarefaCumpridaAguia
           : null,
         bonificacao: Number(bonificacaoAguia),
+        penalidade: Number(penalidadeAguia),
       })
       .eq('id_tarefa', idTarefa)
     if (error) {
@@ -326,6 +343,7 @@ const TarefasModal = ({
           ? tarefaCumpridaPoups
           : null,
         bonificacao: Number(bonificacaoPoups),
+        penalidade: Number(penalidadePoups),
       })
       .eq('id_tarefa', idTarefa)
     if (error) {
@@ -343,6 +361,7 @@ const TarefasModal = ({
           ? tarefaCumpridaMed
           : null,
         bonificacao: Number(bonificacaoMedonhos),
+        penalidade: Number(penalidadeMedonhos),
       })
       .eq('id_tarefa', idTarefa)
     if (error) {
@@ -374,6 +393,7 @@ const TarefasModal = ({
 
       setTarefaCumpridaSK(data.tarefaCumprida || false)
       setBonificacaoSK(data.bonificacao || '')
+      setPenalidadeSK(data.penalidade || '')
     }
   }
 
@@ -400,6 +420,7 @@ const TarefasModal = ({
 
       setTarefaCumpridaAguia(data.tarefaCumprida || false)
       setBonificacaoAguia(data.bonificacao || '')
+      setPenalidadeAguia(data.penalidade || '')
     }
   }
 
@@ -426,6 +447,7 @@ const TarefasModal = ({
 
       setTarefaCumpridaPoups(data.tarefaCumprida || false)
       setBonificacaoPoups(data.bonificacao || '')
+      setPenalidadePoups(data.penalidade || '')
     }
   }
 
@@ -452,6 +474,7 @@ const TarefasModal = ({
 
       setTarefaCumpridaMed(data.tarefaCumprida || false)
       setBonificacaoMedonhos(data.bonificacao || '')
+      setPenalidadeMedonhos(data.penalidade || '')
     }
   }
 
@@ -477,12 +500,16 @@ const TarefasModal = ({
   }, [
     tarefaCumpridaSK,
     bonificacaoSK,
+    penalidadeSK,
     tarefaCumpridaAguia,
     bonificacaoAguia,
+    penalidadeAguia,
     tarefaCumpridaPoups,
     bonificacaoPoups,
+    penalidadePoups,
     tarefaCumpridaMed,
     bonificacaoMedonhos,
+    penalidadeMedonhos,
     forcaskColocacao,
     aguiaColocacao,
     medonhosColocacao,
@@ -512,128 +539,184 @@ const TarefasModal = ({
     if (tarefas?.pontuacaoMaxima) {
       if (tarefaCumpridaSK) {
         setForcask(
-          Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoSK)
+          Number(tarefas?.pontuacaoMaxima) +
+            Number(bonificacaoSK) -
+            Number(penalidadeSK)
         )
       } else if (bonificacaoSK) {
         setForcask(Number(bonificacaoSK))
+      } else if (penalidadeSK) {
+        setForcask(0 - Number(penalidadeSK))
       } else {
         setForcask(0)
       }
 
       if (tarefaCumpridaAguia) {
         setAguia(
-          Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoMaxima) +
+            Number(bonificacaoAguia) -
+            Number(penalidadeAguia)
         )
       } else if (bonificacaoAguia) {
         setAguia(Number(bonificacaoAguia))
+      } else if (penalidadeAguia) {
+        setAguia(0 - Number(penalidadeAguia))
       } else {
         setAguia(0)
       }
 
       if (tarefaCumpridaPoups) {
         setPoupanca(
-          Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoMaxima) +
+            Number(bonificacaoPoups) -
+            Number(penalidadePoups)
         )
       } else if (bonificacaoPoups) {
         setPoupanca(Number(bonificacaoPoups))
+      } else if (penalidadePoups) {
+        setPoupanca(0 - Number(penalidadePoups))
       } else {
         setPoupanca(0)
       }
 
       if (tarefaCumpridaMed) {
         setMedonhos(
-          Number(tarefas?.pontuacaoMaxima) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoMaxima) +
+            Number(bonificacaoMedonhos) -
+            Number(penalidadeMedonhos)
         )
       } else if (bonificacaoMedonhos) {
         setMedonhos(Number(bonificacaoMedonhos))
+      } else if (penalidadeMedonhos) {
+        setMedonhos(0 - Number(penalidadeMedonhos))
       } else {
         setMedonhos(0)
       }
     } else {
       if (forcaskColocacao?.id === 1) {
         setForcask(
-          Number(tarefas?.pontuacaoPrimeiro) + Number(bonificacaoSK)
+          Number(tarefas?.pontuacaoPrimeiro) +
+            Number(bonificacaoSK) -
+            Number(penalidadeSK)
         )
       } else if (forcaskColocacao?.id === 2) {
         setForcask(
-          Number(tarefas?.pontuacaoSegundo) + Number(bonificacaoSK)
+          Number(tarefas?.pontuacaoSegundo) +
+            Number(bonificacaoSK) -
+            Number(penalidadeSK)
         )
       } else if (forcaskColocacao?.id === 3) {
         setForcask(
-          Number(tarefas?.pontuacaoTerceiro) + Number(bonificacaoSK)
+          Number(tarefas?.pontuacaoTerceiro) +
+            Number(bonificacaoSK) -
+            Number(penalidadeSK)
         )
       } else if (forcaskColocacao?.id === 4) {
         setForcask(
-          Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoSK)
+          Number(tarefas?.pontuacaoQuarto) +
+            Number(bonificacaoSK) -
+            Number(penalidadeSK)
         )
       } else if (forcaskColocacao?.id === 5 && bonificacaoSK) {
         setForcask(Number(bonificacaoSK))
+      } else if (forcaskColocacao?.id === 5 && penalidadeSK) {
+        setForcask(0 - Number(penalidadeSK))
       } else {
         setForcask(0)
       }
 
       if (aguiaColocacao?.id === 1) {
         setAguia(
-          Number(tarefas?.pontuacaoPrimeiro) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoPrimeiro) +
+            Number(bonificacaoAguia) -
+            Number(penalidadeAguia)
         )
       } else if (aguiaColocacao?.id === 2) {
         setAguia(
-          Number(tarefas?.pontuacaoSegundo) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoSegundo) +
+            Number(bonificacaoAguia) -
+            Number(penalidadeAguia)
         )
       } else if (aguiaColocacao?.id === 3) {
         setAguia(
-          Number(tarefas?.pontuacaoTerceiro) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoTerceiro) +
+            Number(bonificacaoAguia) -
+            Number(penalidadeAguia)
         )
       } else if (aguiaColocacao?.id === 4) {
         setAguia(
-          Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoAguia)
+          Number(tarefas?.pontuacaoQuarto) +
+            Number(bonificacaoAguia) -
+            Number(penalidadeAguia)
         )
       } else if (aguiaColocacao?.id === 5 && bonificacaoAguia) {
         setAguia(Number(bonificacaoAguia))
+      } else if (aguiaColocacao?.id === 5 && penalidadeAguia) {
+        setAguia(0 - Number(penalidadeAguia))
       } else {
         setAguia(0)
       }
 
       if (poupancaColocacao?.id === 1) {
         setPoupanca(
-          Number(tarefas?.pontuacaoPrimeiro) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoPrimeiro) +
+            Number(bonificacaoPoups) -
+            Number(penalidadePoups)
         )
       } else if (poupancaColocacao?.id === 2) {
         setPoupanca(
-          Number(tarefas?.pontuacaoSegundo) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoSegundo) +
+            Number(bonificacaoPoups) -
+            Number(penalidadePoups)
         )
       } else if (poupancaColocacao?.id === 3) {
         setPoupanca(
-          Number(tarefas?.pontuacaoTerceiro) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoTerceiro) +
+            Number(bonificacaoPoups) -
+            Number(penalidadePoups)
         )
       } else if (poupancaColocacao?.id === 4) {
         setPoupanca(
-          Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoPoups)
+          Number(tarefas?.pontuacaoQuarto) +
+            Number(bonificacaoPoups) -
+            Number(penalidadePoups)
         )
       } else if (poupancaColocacao?.id === 5 && bonificacaoPoups) {
         setPoupanca(Number(bonificacaoPoups))
+      } else if (poupancaColocacao?.id === 5 && penalidadePoups) {
+        setPoupanca(0 - Number(penalidadePoups))
       } else {
         setPoupanca(0)
       }
 
       if (medonhosColocacao?.id === 1) {
         setMedonhos(
-          Number(tarefas?.pontuacaoPrimeiro) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoPrimeiro) +
+            Number(bonificacaoMedonhos) -
+            Number(penalidadeMedonhos)
         )
       } else if (medonhosColocacao?.id === 2) {
         setMedonhos(
-          Number(tarefas?.pontuacaoSegundo) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoSegundo) +
+            Number(bonificacaoMedonhos) -
+            Number(penalidadeMedonhos)
         )
       } else if (medonhosColocacao?.id === 3) {
         setMedonhos(
-          Number(tarefas?.pontuacaoTerceiro) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoTerceiro) +
+            Number(bonificacaoMedonhos) -
+            Number(penalidadeMedonhos)
         )
       } else if (medonhosColocacao?.id === 4) {
         setMedonhos(
-          Number(tarefas?.pontuacaoQuarto) + Number(bonificacaoMedonhos)
+          Number(tarefas?.pontuacaoQuarto) +
+            Number(bonificacaoMedonhos) -
+            Number(penalidadeMedonhos)
         )
       } else if (medonhosColocacao?.id === 5 && bonificacaoMedonhos) {
         setMedonhos(Number(bonificacaoMedonhos))
+      } else if (medonhosColocacao?.id === 5 && penalidadeMedonhos) {
+        setMedonhos(0 - Number(penalidadeMedonhos))
       } else {
         setMedonhos(0)
       }
@@ -776,27 +859,36 @@ const TarefasModal = ({
                     className={`${tomorrow.className} text-xl flex justify-between items-center`}
                   >
                     RESULTADO
-                    {tarefas?.id_setor === 1 ? (
-                      <div>
-                        <BlackTextField
-                          type='String'
-                          value={respostaCharada}
-                          onChange={event => {
-                            setRespostaCharada(event.target.value)
-                          }}
-                          sx={{
-                            '.MuiFormLabel-root': {
-                              alignItems: 'center',
-                              display: 'flex',
-                              height: '25px',
-                              color: 'black',
-                              fontWeight: 600,
-                            },
-                          }}
-                          label='Resposta'
+                    <div className='flex gap-16 items-center'>
+                      <div className='flex gap-5 text-base items-center'>
+                        <span>Tarefa finalizada</span>
+                        <Toggle
+                          setChange={setTarefaFinalizada}
+                          change={tarefaFinalizada}
                         />
                       </div>
-                    ) : null}
+                      {tarefas?.id_setor === 1 ? (
+                        <div>
+                          <BlackTextField
+                            type='String'
+                            value={respostaCharada}
+                            onChange={event => {
+                              setRespostaCharada(event.target.value)
+                            }}
+                            sx={{
+                              '.MuiFormLabel-root': {
+                                alignItems: 'center',
+                                display: 'flex',
+                                height: '25px',
+                                color: 'black',
+                                fontWeight: 600,
+                              },
+                            }}
+                            label='Resposta'
+                          />
+                        </div>
+                      ) : null}
+                    </div>
                   </span>
                   <span className='flex justify-center w-full'>
                     {tarefas?.pontuacaoMaxima ? (
@@ -832,6 +924,25 @@ const TarefasModal = ({
                             }}
                             label='Bonificação'
                           />
+                          <BlackTextField
+                            type='number'
+                            inputProps={{ min: 0 }}
+                            onChange={event => {
+                              setPenalidadeSK(event.target.value)
+                            }}
+                            value={penalidadeSK && penalidadeSK}
+                            sx={{
+                              '.MuiFormLabel-root': {
+                                alignItems: 'center',
+                                display: 'flex',
+                                height: '25px',
+                                color: 'black',
+                                fontWeight: 600,
+                              },
+                              width: '100%',
+                            }}
+                            label='Penalidade'
+                          />
                         </div>
                         <div className='flex flex-col items-center justify-center gap-5'>
                           <Image
@@ -864,6 +975,25 @@ const TarefasModal = ({
                             }}
                             label='Bonificação'
                           />
+                          <BlackTextField
+                            type='number'
+                            inputProps={{ min: 0 }}
+                            onChange={event => {
+                              setPenalidadeAguia(event.target.value)
+                            }}
+                            value={penalidadeAguia && penalidadeAguia}
+                            sx={{
+                              '.MuiFormLabel-root': {
+                                alignItems: 'center',
+                                display: 'flex',
+                                height: '25px',
+                                color: 'black',
+                                fontWeight: 600,
+                              },
+                              width: '100%',
+                            }}
+                            label='Penalidade'
+                          />
                         </div>
                         <div className='flex flex-col items-center justify-center gap-5 '>
                           <Image
@@ -895,6 +1025,25 @@ const TarefasModal = ({
                               width: '100%',
                             }}
                             label='Bonificação'
+                          />
+                          <BlackTextField
+                            type='number'
+                            inputProps={{ min: 0 }}
+                            onChange={event => {
+                              setPenalidadePoups(event.target.value)
+                            }}
+                            value={penalidadePoups && penalidadePoups}
+                            sx={{
+                              '.MuiFormLabel-root': {
+                                alignItems: 'center',
+                                display: 'flex',
+                                height: '25px',
+                                color: 'black',
+                                fontWeight: 600,
+                              },
+                              width: '100%',
+                            }}
+                            label='Penalidade'
                           />
                         </div>
                         <div className='flex flex-col items-center justify-center gap-5'>
@@ -929,6 +1078,27 @@ const TarefasModal = ({
                               width: '100%',
                             }}
                             label='Bonificação'
+                          />
+                          <BlackTextField
+                            type='number'
+                            inputProps={{ min: 0 }}
+                            onChange={event => {
+                              setPenalidadeMedonhos(event.target.value)
+                            }}
+                            value={
+                              penalidadeMedonhos && penalidadeMedonhos
+                            }
+                            sx={{
+                              '.MuiFormLabel-root': {
+                                alignItems: 'center',
+                                display: 'flex',
+                                height: '25px',
+                                color: 'black',
+                                fontWeight: 600,
+                              },
+                              width: '100%',
+                            }}
+                            label='Penalidade'
                           />
                         </div>
                       </div>
@@ -1003,6 +1173,25 @@ const TarefasModal = ({
                             }}
                             label='Bonificação'
                           />
+                          <BlackTextField
+                            type='number'
+                            inputProps={{ min: 0 }}
+                            onChange={event => {
+                              setPenalidadeSK(event.target.value)
+                            }}
+                            value={penalidadeSK && penalidadeSK}
+                            sx={{
+                              '.MuiFormLabel-root': {
+                                alignItems: 'center',
+                                display: 'flex',
+                                height: '25px',
+                                color: 'black',
+                                fontWeight: 600,
+                              },
+                              width: '100%',
+                            }}
+                            label='Penalidade'
+                          />
                         </div>
                         <div className='flex flex-col items-center justify-center gap-5'>
                           <Image
@@ -1073,6 +1262,25 @@ const TarefasModal = ({
                             }}
                             label='Bonificação'
                           />
+                          <BlackTextField
+                            type='number'
+                            inputProps={{ min: 0 }}
+                            onChange={event => {
+                              setPenalidadeAguia(event.target.value)
+                            }}
+                            value={penalidadeAguia && penalidadeAguia}
+                            sx={{
+                              '.MuiFormLabel-root': {
+                                alignItems: 'center',
+                                display: 'flex',
+                                height: '25px',
+                                color: 'black',
+                                fontWeight: 600,
+                              },
+                              width: '100%',
+                            }}
+                            label='Penalidade'
+                          />
                         </div>
                         <div className='flex flex-col items-center justify-center gap-5 '>
                           <Image
@@ -1142,6 +1350,25 @@ const TarefasModal = ({
                               width: '100%',
                             }}
                             label='Bonificação'
+                          />
+                          <BlackTextField
+                            type='number'
+                            inputProps={{ min: 0 }}
+                            onChange={event => {
+                              setPenalidadePoups(event.target.value)
+                            }}
+                            value={penalidadePoups && penalidadePoups}
+                            sx={{
+                              '.MuiFormLabel-root': {
+                                alignItems: 'center',
+                                display: 'flex',
+                                height: '25px',
+                                color: 'black',
+                                fontWeight: 600,
+                              },
+                              width: '100%',
+                            }}
+                            label='Penalidade'
                           />
                         </div>
                         <div className='flex flex-col items-center justify-center gap-5 '>
@@ -1214,6 +1441,27 @@ const TarefasModal = ({
                               width: '100%',
                             }}
                             label='Bonificação'
+                          />
+                          <BlackTextField
+                            type='number'
+                            inputProps={{ min: 0 }}
+                            onChange={event => {
+                              setPenalidadeMedonhos(event.target.value)
+                            }}
+                            value={
+                              penalidadeMedonhos && penalidadeMedonhos
+                            }
+                            sx={{
+                              '.MuiFormLabel-root': {
+                                alignItems: 'center',
+                                display: 'flex',
+                                height: '25px',
+                                color: 'black',
+                                fontWeight: 600,
+                              },
+                              width: '100%',
+                            }}
+                            label='Penalidade'
                           />
                         </div>
                       </div>

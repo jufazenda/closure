@@ -17,7 +17,6 @@ interface PropsEquipesResultado {
 }
 
 const Resultado = () => {
-
   const [allResultado, setAllResultado] = useState<
     PropsEquipesResultado[]
   >([])
