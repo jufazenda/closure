@@ -50,7 +50,9 @@ const Header = () => {
           Resultado
         </Link>
         <Link
-          href={'http://www.armadadedumbledore.com.br/'}
+          href={
+            'https://armadaorganizadora.com.br/gymkhana/7befb3a6-9fc0-4c3b-971a-a361f5bcba53'
+          }
           target='_blank'
           className='mr-8 uppercase hover:text-padrao-purple-300'
         >

@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react'
 import supabase from './api/supabase'
 import Head from 'next/head'
-import AdicionarTarefa from './componentes/AdicionarTarefaModal'
+import AdicionarTarefa from './components/AdicionarTarefaModal'
 
 import { AddCircle } from '@mui/icons-material'
-import CardTarefa from './componentes/CardTarefa'
+import CardTarefa from './components/CardTarefa'
 
 import { Tomorrow } from 'next/font/google'
-import SearchBox from './componentes/SearchBox'
+import SearchBox from './components/SearchBox'
 import { createTheme } from '@mui/material'
 import { ThemeProvider } from '@emotion/react'
 

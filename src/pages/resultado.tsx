@@ -6,7 +6,7 @@ import { Tomorrow } from 'next/font/google'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import supabase from './api/supabase'
-import CardResultado from './componentes/CardResultado'
+import CardResultado from './components/CardResultado'
 
 const tomorrow = Tomorrow({ subsets: ['latin'], weight: '600' })
 
