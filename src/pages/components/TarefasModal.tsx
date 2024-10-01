@@ -908,6 +908,9 @@ const TarefasModal = ({
                           <BlackTextField
                             type='number'
                             inputProps={{ min: 0 }}
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             onChange={event => {
                               setBonificacaoSK(event.target.value)
                             }}
@@ -926,6 +929,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setPenalidadeSK(event.target.value)
@@ -958,6 +964,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setBonificacaoAguia(event.target.value)
@@ -977,6 +986,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setPenalidadeAguia(event.target.value)
@@ -1009,6 +1021,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setBonificacaoPoups(event.target.value)
@@ -1028,6 +1043,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setPenalidadePoups(event.target.value)
@@ -1060,6 +1078,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setBonificacaoMedonhos(event.target.value)
@@ -1081,6 +1102,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setPenalidadeMedonhos(event.target.value)
@@ -1156,6 +1180,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setBonificacaoSK(event.target.value)
@@ -1175,6 +1202,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setPenalidadeSK(event.target.value)
@@ -1245,6 +1275,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setBonificacaoAguia(event.target.value)
@@ -1264,6 +1297,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setPenalidadeAguia(event.target.value)
@@ -1334,6 +1370,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setBonificacaoPoups(event.target.value)
@@ -1353,6 +1392,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setPenalidadePoups(event.target.value)
@@ -1423,6 +1465,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setBonificacaoMedonhos(event.target.value)
@@ -1444,6 +1489,9 @@ const TarefasModal = ({
                           />
                           <BlackTextField
                             type='number'
+                            onWheel={e =>
+                              (e.target as HTMLInputElement).blur()
+                            }
                             inputProps={{ min: 0 }}
                             onChange={event => {
                               setPenalidadeMedonhos(event.target.value)

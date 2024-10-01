@@ -199,7 +199,7 @@ const SearchBox = ({
             options={allSetores}
             getOptionLabel={option => option.setor}
             ListboxProps={{
-              style: { maxHeight: 190, fontFamily: 'Montserrat' },
+              style: { maxHeight: 190 },
             }}
             size='medium'
             onChange={(event, newValue) => {
@@ -237,7 +237,7 @@ const SearchBox = ({
             options={lotes}
             getOptionLabel={option => option.numero_lote}
             ListboxProps={{
-              style: { maxHeight: 190, fontFamily: 'Montserrat' },
+              style: { maxHeight: 190 },
             }}
             size='medium'
             onChange={(event, newValue) => {

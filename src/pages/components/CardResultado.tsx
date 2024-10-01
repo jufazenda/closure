@@ -25,7 +25,7 @@ const CardResultado = ({
         src={src}
         alt={`Logo da ${allResultado?.equipe}`}
         width={120}
-        height={100}
+        height={120}
         priority
       />
       <span className='text-5xl'>{allResultado?.pontuacaoTotal || 0}</span>

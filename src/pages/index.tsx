@@ -5,9 +5,9 @@ import supabase from './api/supabase'
 import Head from 'next/head'
 import AdicionarTarefa from './components/AdicionarTarefaModal'
 
-import { AddCircle } from '@mui/icons-material'
+import { AddCircle, FileDownload } from '@mui/icons-material'
 import CardTarefa from './components/CardTarefa'
-
+import * as XLSX from 'xlsx'
 import { Tomorrow } from 'next/font/google'
 import SearchBox from './components/SearchBox'
 import { createTheme } from '@mui/material'
@@ -108,6 +108,34 @@ const Home = () => {
     return components[modalName]
   }
 
+  const exportData = async () => {
+    const { data: dataLotes } = await supabase
+      .from('Lote')
+      .select('*')
+      .order('numero_lote')
+
+    const excelData = filteredTarefas.map(tarefa => {
+      const lote = dataLotes?.find(lote => lote.id === tarefa.id_lote)
+
+      return {
+        numero_tarefa: tarefa.numero_tarefa,
+        tarefa: tarefa.tarefa,
+        lote: lote ? lote.numero_lote : 'Sem lote',
+      }
+    })
+
+    const worksheetData = [
+      ['Numero da Tarefa', 'Tarefa', 'Lote'],
+      ...excelData.map(row => [row.numero_tarefa, row.tarefa, row.lote]),
+    ]
+
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData)
+    const workbook = XLSX.utils.book_new()
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Tarefas')
+    XLSX.writeFile(workbook, 'tarefas.xlsx')
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Head>
@@ -133,6 +161,15 @@ const Home = () => {
               >
                 <AddCircle />
                 Adicionar
+              </button>
+            </div>
+            <div className='flex items-center justify-end text-lg gap-10'>
+              <button
+                className='flex gap-1 items-center font-semibold cursor-pointer hover:text-padrao-red-300'
+                onClick={() => exportData()}
+              >
+                <FileDownload />
+                Exportar
               </button>
             </div>
             {/* ---- para ver em modos diferentes ---- 
@@ -165,6 +202,13 @@ const Home = () => {
                 </Tooltip>
               </ButtonGroup>
             </div> */}
+          </div>
+
+          <div className='flex items-center justify-center gap-8'>
+            <span className='text-lg'> N° Total de Tarefas</span>
+            <span className={`${tomorrow.className} text-2xl`}>
+              {filteredTarefas?.length}
+            </span>
           </div>
 
           <div className='flex flex-col items-center justify-center w-full md:flex-row'>
