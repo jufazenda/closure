@@ -1,18 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react'
-import {
-  Autocomplete,
-  TextField,
-  styled,
-  Checkbox,
-  FormControlLabel,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  Divider,
-  Box,
-} from '@mui/material'
+import { Autocomplete, TextField, styled, Checkbox } from '@mui/material'
 import { FileDownload, SelectAll, Deselect } from '@mui/icons-material'
 import ExcelJS from 'exceljs'
 import Modal from './commons/Modal'
@@ -77,8 +65,9 @@ const ExportModal = ({
 }: ExportModalProps) => {
   const [lotes, setLotes] = useState<PropsLotes[]>([])
   const [selectedLote, setSelectedLote] = useState<number | 'all'>('all')
-  const [filteredTarefas, setFilteredTarefas] =
-    useState<PropsTarefas[]>(allTarefas)
+  const [filteredTarefas, setFilteredTarefas] = useState<PropsTarefas[]>(
+    allTarefas ?? []
+  )
   const [selectedTarefas, setSelectedTarefas] = useState<number[]>([])
   const [nomeEquipe, setNomeEquipe] = useState('Força SK')
   const [loading, setLoading] = useState(false)
@@ -150,7 +139,7 @@ const ExportModal = ({
         selectedTarefas.includes(tarefa.id)
       )
 
-      const tarefasData = tarefasSelecionadas.map(tarefa => {
+      const tarefasData = tarefasSelecionadas?.map(tarefa => {
         const lote = dataLotes?.find(
           (l: { id: number | null }) => l.id === tarefa.id_lote
         )
@@ -277,7 +266,7 @@ const ExportModal = ({
             { id: 'all', numero_lote: 'Todos os Lotes' },
             ...lotes,
           ]}
-          getOptionLabel={option => option.numero_lote}
+          getOptionLabel={option => option?.numero_lote ?? ''}
           ListboxProps={{
             style: { maxHeight: 190, fontFamily: 'Montserrat' },
           }}
@@ -353,7 +342,7 @@ const ExportModal = ({
             backgroundColor: 'rgba(232, 232, 232, 0.3)',
           }}
         >
-          {filteredTarefas.length === 0 ? (
+          {filteredTarefas?.length === 0 ? (
             <div className='p-4 text-center text-gray-600'>
               <span>Nenhuma tarefa encontrada</span>
               <br />
@@ -362,7 +351,7 @@ const ExportModal = ({
               </span>
             </div>
           ) : (
-            filteredTarefas.map(tarefa => {
+            filteredTarefas?.map(tarefa => {
               const lote = lotes.find(l => l.id === tarefa.id_lote)
               const isSelected = selectedTarefas.includes(tarefa.id)
 
