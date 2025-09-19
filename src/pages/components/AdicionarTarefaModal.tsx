@@ -44,6 +44,7 @@ interface PropsTarefas {
   pontuacaoTerceiro: number
   pontuacaoQuarto: number
   horario: string
+  parte: number
 }
 
 interface PropsLotes {
@@ -97,6 +98,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
   const [tarefa, setTarefa] = useState<string>('')
   const [linkTarefa, setLinkTarefa] = useState<string>('')
   const [numero, setNumero] = useState<number | string>(0)
+  const [parte, setParte] = useState<number | string>(0)
   const [lote, setLote] = useState<PropsLotes | null>(null)
   const [lotes, setLotes] = useState<PropsLotes[]>([])
   const [horario, setHorario] = useState('')
@@ -215,14 +217,14 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
         setShowNotification: true,
         type: 3,
       })
-    } else if (verificarIdExistente(numero)) {
-      setNotificationProps({
-        importantMessage: 'Erro!',
-        message:
-          'Tarefa já foi cadastrada. Verifique com outros usuários.',
-        setShowNotification: true,
-        type: 3,
-      })
+      // } else if (verificarIdExistente(numero)) {
+      //   setNotificationProps({
+      //     importantMessage: 'Erro!',
+      //     message:
+      //       'Tarefa já foi cadastrada. Verifique com outros usuários.',
+      //     setShowNotification: true,
+      //     type: 3,
+      //   })
     } else {
       const { data, error } = await supabase.from('Tarefas').insert([
         {
@@ -237,6 +239,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
           pontuacaoTerceiro: pontuacaoTerceiro ? pontuacaoTerceiro : null,
           pontuacaoQuarto: pontuacaoQuarto ? pontuacaoQuarto : null,
           horario: horario ? horario : null,
+          parte: parte ? parte : 0,
         },
       ])
       setNotificationProps({
@@ -366,6 +369,27 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
                 width: '100%',
               }}
               label='Número'
+            />
+          </div>
+          <div className='w-full md:w-3/12 '>
+            <BlackTextField
+              required
+              type='number'
+              onChange={event => {
+                setParte(event.target.value)
+              }}
+              value={parte}
+              sx={{
+                '.MuiFormLabel-root': {
+                  alignItems: 'center',
+                  display: 'flex',
+                  height: '25px',
+                  color: 'black',
+                  fontWeight: 600,
+                },
+                width: '100%',
+              }}
+              label='Parte'
             />
           </div>
         </div>

@@ -23,6 +23,8 @@ interface PropsTarefas {
   pontuacaoTerceiro: number
   pontuacaoQuarto: number
   horario: string
+  descricao_item: string
+parte: number
 }
 
 interface PropsSetores {

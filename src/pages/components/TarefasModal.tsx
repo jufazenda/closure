@@ -54,6 +54,8 @@ interface PropsTarefas {
   horario: string
   observacao?: string
   link?: string
+  descricao_item: string | null
+  parte: number | null
 }
 
 interface PropsColocacao {
@@ -180,6 +182,7 @@ const TarefasModal = ({
   >('')
 
   const [respostaCharada, setRespostaCharada] = useState<string>('')
+  const [descricaoItem, setDescricaoItem] = useState<string>('')
   const [observacao, setObservacao] = useState<string>('')
   const [horarioPadrao, setHorarioPadrao] = useState<string>('')
 
@@ -265,6 +268,7 @@ const TarefasModal = ({
       setObservacao(data.observacao || '')
       setRespostaCharada(data.respostaCharada || '')
       setTarefaFinalizada(data.status || false)
+      setDescricaoItem(data.descricao_item || '')
     }
   }
 
@@ -289,6 +293,7 @@ const TarefasModal = ({
       .from('Tarefas')
       .update({
         respostaCharada: respostaCharada,
+        descricao_item: descricaoItem,
         observacao: observacao,
         status: tarefaFinalizada,
       })
@@ -801,7 +806,9 @@ const TarefasModal = ({
                   </span>
 
                   <span className={`${tomorrow.className} text-2xl flex`}>
-                    {ajustarNumero()}
+                    {`${ajustarNumero()} ${
+                      tarefas?.parte ? `- Parte ${tarefas.parte}` : ''
+                    }`}
                   </span>
                 </div>
                 <div className='flex gap-5 w-full justify-end '>
@@ -890,6 +897,7 @@ const TarefasModal = ({
                       ) : null}
                     </div>
                   </span>
+
                   <span className='flex justify-center w-full'>
                     {tarefas?.pontuacaoMaxima ? (
                       <div className='grid grid-cols-1 gap-10 mb-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
@@ -1537,6 +1545,23 @@ const TarefasModal = ({
                       label='Observação'
                     />
                   </span>
+                  <BlackTextField
+                    type='String'
+                    value={descricaoItem}
+                    onChange={event => {
+                      setDescricaoItem(event.target.value)
+                    }}
+                    sx={{
+                      '.MuiFormLabel-root': {
+                        alignItems: 'center',
+                        display: 'flex',
+                        height: '25px',
+                        color: 'black',
+                        fontWeight: 600,
+                      },
+                    }}
+                    label='Descrição do Item Entregue'
+                  />
                 </div>
               </section>
               <footer

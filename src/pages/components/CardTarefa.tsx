@@ -23,6 +23,8 @@ interface PropsTarefas {
   pontuacaoTerceiro: number
   pontuacaoQuarto: number
   horario: string
+  descricao_item: string | null
+  parte: number | null
 }
 interface PropsSetores {
   id: number
@@ -237,9 +239,11 @@ const CardTarefa = ({
             >
               <div className='flex m-2 items-center w-full gap-5'>
                 <span
-                  className={`${tomorrow.className} flex w-1/12 justify-center `}
+                  className={`${tomorrow.className} flex min-w-fit justify-center `}
                 >
-                  {ajustarNumero()}
+                  {`${ajustarNumero()} ${
+                    tarefas?.parte ? `- Parte ${tarefas.parte}` : ''
+                  }`}
                 </span>
                 <span className='flex w-7/12 md:w-3/4 overflow-hidden whitespace-nowrap'>
                   <div className='flex-1 w-3/4 overflow-hidden overflow-ellipsis'>
@@ -283,7 +287,9 @@ const CardTarefa = ({
                 </div>
                 <div className='flex flex-col items-end justify-between h-full'>
                   <span className={`${tomorrow.className} flex`}>
-                    {ajustarNumero()}
+                    {`${ajustarNumero()} ${
+                      tarefas?.parte ? `- Parte ${tarefas.parte}` : ''
+                    }`}
                   </span>
                   <span>
                     {horario ? horario : `Lote ${tarefas?.id_lote}`}

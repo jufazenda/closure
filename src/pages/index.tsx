@@ -1,13 +1,11 @@
-;('')
-
 import { useEffect, useState } from 'react'
 import supabase from './api/supabase'
 import Head from 'next/head'
 import AdicionarTarefa from './components/AdicionarTarefaModal'
+import ExportModal from './components/ExportModal' // Novo import
 
 import { AddCircle, FileDownload } from '@mui/icons-material'
 import CardTarefa from './components/CardTarefa'
-import * as XLSX from 'xlsx'
 import { Tomorrow } from 'next/font/google'
 import SearchBox from './components/SearchBox'
 import { createTheme } from '@mui/material'
@@ -31,6 +29,8 @@ interface PropsTarefas {
   pontuacaoTerceiro: number
   pontuacaoQuarto: number
   horario: string
+  descricao_item: string
+  parte: number
 }
 
 interface PropsSetores {
@@ -39,6 +39,7 @@ interface PropsSetores {
   responsavel: string
   created_at: Date
 }
+
 interface PropsLotes {
   id: number
   numero_lote: string
@@ -60,11 +61,10 @@ const Home = () => {
   const [modalComponentName, setModalComponentName] = useState('')
   const [loading, setLoading] = useState(false)
   const [listMode, setListMode] = useState(true)
+  const [exportModalOpen, setExportModalOpen] = useState(false)
 
   const [allTarefas, setAllTarefas] = useState<PropsTarefas[]>([])
-
   const [buscando, setBuscando] = useState('')
-
   const [setor, setSetor] = useState<PropsSetores | null>(null)
   const [lote, setLote] = useState<PropsLotes | null>(null)
   const [filteredTarefas, setFilteredTarefas] = useState<PropsTarefas[]>(
@@ -104,36 +104,16 @@ const Home = () => {
           setLoading={setLoading}
         />
       ),
+      ExportModal: (
+        <ExportModal
+          open={activeModal}
+          onClose={() => setActiveModal(false)}
+          allTarefas={allTarefas}
+          supabase={supabase}
+        />
+      ),
     }
     return components[modalName]
-  }
-
-  const exportData = async () => {
-    const { data: dataLotes } = await supabase
-      .from('Lote')
-      .select('*')
-      .order('numero_lote')
-
-    const excelData = filteredTarefas.map(tarefa => {
-      const lote = dataLotes?.find(lote => lote.id === tarefa.id_lote)
-
-      return {
-        numero_tarefa: tarefa.numero_tarefa,
-        tarefa: tarefa.tarefa,
-        lote: lote ? lote.numero_lote : 'Sem lote',
-      }
-    })
-
-    const worksheetData = [
-      ['Numero da Tarefa', 'Tarefa', 'Lote'],
-      ...excelData.map(row => [row.numero_tarefa, row.tarefa, row.lote]),
-    ]
-
-    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData)
-    const workbook = XLSX.utils.book_new()
-
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Tarefas')
-    XLSX.writeFile(workbook, 'tarefas.xlsx')
   }
 
   return (
@@ -166,42 +146,12 @@ const Home = () => {
             <div className='flex items-center justify-end text-lg gap-10'>
               <button
                 className='flex gap-1 items-center font-semibold cursor-pointer hover:text-padrao-red-300'
-                onClick={() => exportData()}
+                onClick={() => openModal('ExportModal')}
               >
                 <FileDownload />
                 Exportar
               </button>
             </div>
-            {/* ---- para ver em modos diferentes ---- 
-            
-            <div className='flex items-center justify-end text-lg gap-3'>
-              <ButtonGroup
-                variant='contained'
-                aria-label='text button group'
-                disableElevation
-              >
-                <Tooltip title='Modo Lista'>
-                  <IconButton
-                    onClick={() => {
-                      setListMode(true)
-                    }}
-                    color='primary'
-                  >
-                    <Reorder />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title='Modo Grade'>
-                  <IconButton
-                    onClick={() => {
-                      setListMode(false)
-                    }}
-                    color='primary'
-                  >
-                    <Apps />
-                  </IconButton>
-                </Tooltip>
-              </ButtonGroup>
-            </div> */}
           </div>
 
           <div className='flex items-center justify-center gap-8'>
@@ -310,6 +260,8 @@ const Home = () => {
           </div>
 
           {activeModal && chooseModal(modalComponentName)}
+
+          {/* Novo Modal de Exportação */}
         </div>
       </main>
     </ThemeProvider>
