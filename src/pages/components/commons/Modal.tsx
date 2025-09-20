@@ -72,7 +72,6 @@ const Modal: FC<PropsModal> = ({
         className={`fixed left-0 flex items-center justify-center w-full h-full overflow-auto bg-black-shadow ${
           isEditing ? 'top-12' : 'top-0'
         }`}
-        onClick={onClose}
       >
         <div
           className='bg-white rounded-2xl m-10 shadow w-3/4 md:w-1/2 max-h-450 md:max-h-80% overflow-auto'
