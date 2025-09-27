@@ -139,7 +139,7 @@ const ExportModal = ({
         selectedTarefas.includes(tarefa.id)
       )
 
-      const tarefasData = tarefasSelecionadas?.map(tarefa => {
+      const tarefasData = (tarefasSelecionadas ?? []).map(tarefa => {
         const lote = dataLotes?.find(
           (l: { id: number | null }) => l.id === tarefa.id_lote
         )
@@ -159,42 +159,43 @@ const ExportModal = ({
       const arrayBuffer = await response.arrayBuffer()
       await workbook.xlsx.load(arrayBuffer)
 
+      if (workbook.worksheets.length === 0) {
+        throw new Error('Modelo da planilha não contém worksheets ou não foi carregado corretamente')
+      }
+
       const worksheet = workbook.worksheets[0]
 
-      // 2. Preencher cabeçalho
       const loteTexto =
         selectedLote === 'all'
-          ? 'Todos os Lotes'
+          ? 'todos'
           : lotes.find(l => l.id === selectedLote)?.numero_lote ||
-            'Sem lote'
+            'Sem Lote'
 
-      worksheet.getCell('B3').value = loteTexto
-      worksheet.getCell('F3').value = nomeEquipe
+      // Cabeçalho ajustado
+      if (!worksheet.getCell('B9').isMerged) {
+        worksheet.mergeCells('B9:C9')
+      }
+      worksheet.getCell('B9').value = loteTexto
 
-      // 3. Preencher tarefas a partir da linha 6
-      let startRow = 6
+      if (!worksheet.getCell('K9').isMerged) {
+        worksheet.mergeCells('K9:L9')
+      }
+      worksheet.getCell('K9').value = nomeEquipe
+
+      // 3. Preencher tarefas a partir da linha 15 (duas linhas por tarefa)
+      let startRow = 15
       tarefasData.forEach((t, i) => {
-        const rowNumber = startRow + i
-        const row = worksheet.getRow(rowNumber)
+        const rowStart = startRow + i * 2
+        const rowEnd = rowStart + 1
 
-        // Coluna 1: número
-        row.getCell(1).value = t.numero_tarefa
+        // Número da tarefa em A
+        worksheet.getCell(`A${rowStart}`).value = t.numero_tarefa
 
-        // Mesclar colunas 2 e 3 apenas se ainda não estiverem mescladas
-        if (!worksheet.getCell(`B${rowNumber}`).isMerged) {
-          worksheet.mergeCells(`B${rowNumber}:C${rowNumber}`)
-        }
-        worksheet.getCell(`B${rowNumber}`).value = t.tarefa
+        // Título em B-F
+        worksheet.getCell(`B${rowStart}`).value = t.tarefa
 
-        // Mesclar colunas 4 e 5 apenas se ainda não estiverem mescladas
-        if (!worksheet.getCell(`D${rowNumber}`).isMerged) {
-          worksheet.mergeCells(`D${rowNumber}:E${rowNumber}`)
-        }
-        worksheet.getCell(`D${rowNumber}`).value = t.descricao
-
-        // Observações na coluna 6
-        row.getCell(6).value = t.observacoes
-        row.commit()
+        // Descrição em G-J
+        worksheet.getCell(`G${rowStart}`).value = t.descricao
       })
 
       // 4. Gerar arquivo para download
@@ -216,9 +217,16 @@ const ExportModal = ({
       link.click()
 
       onClose()
-    } catch (error) {
-      console.error('Erro ao exportar:', error)
-      alert('Erro ao exportar planilha')
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'message' in error) {
+        const errMsg = (error as { message?: string; stack?: string }).message
+        const errStack = (error as { message?: string; stack?: string }).stack
+        console.error('Erro ao exportar:', errMsg, errStack, error)
+        alert(`Erro ao exportar planilha: ${errMsg || 'Erro desconhecido'}`)
+      } else {
+        console.error('Erro ao exportar:', error)
+        alert('Erro ao exportar planilha: Erro desconhecido')
+      }
     } finally {
       setLoading(false)
     }
