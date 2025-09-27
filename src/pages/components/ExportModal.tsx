@@ -172,15 +172,21 @@ const ExportModal = ({
             'Sem Lote'
 
       // Cabeçalho ajustado
-      if (!worksheet.getCell('B9').isMerged) {
+      const cellB9 = worksheet.getCell('B9')
+      const styleB9 = { ...cellB9.style }
+      if (!cellB9.isMerged) {
         worksheet.mergeCells('B9:C9')
       }
-      worksheet.getCell('B9').value = loteTexto
+      cellB9.value = loteTexto
+      cellB9.style = styleB9
 
-      if (!worksheet.getCell('K9').isMerged) {
+      const cellK9 = worksheet.getCell('K9')
+      const styleK9 = { ...cellK9.style }
+      if (!cellK9.isMerged) {
         worksheet.mergeCells('K9:L9')
       }
-      worksheet.getCell('K9').value = nomeEquipe
+      cellK9.value = nomeEquipe
+      cellK9.style = styleK9
 
       // 3. Preencher tarefas a partir da linha 15 (duas linhas por tarefa)
       let startRow = 15
@@ -189,13 +195,22 @@ const ExportModal = ({
         const rowEnd = rowStart + 1
 
         // Número da tarefa em A
-        worksheet.getCell(`A${rowStart}`).value = t.numero_tarefa
+        const cellA = worksheet.getCell(`A${rowStart}`)
+        const styleA = { ...cellA.style }
+        cellA.value = t.numero_tarefa
+        cellA.style = styleA
 
         // Título em B-F
-        worksheet.getCell(`B${rowStart}`).value = t.tarefa
+        const cellB = worksheet.getCell(`B${rowStart}`)
+        const styleB = { ...cellB.style }
+        cellB.value = t.tarefa
+        cellB.style = styleB
 
         // Descrição em G-J
-        worksheet.getCell(`G${rowStart}`).value = t.descricao
+        const cellG = worksheet.getCell(`G${rowStart}`)
+        const styleG = { ...cellG.style }
+        cellG.value = t.descricao
+        cellG.style = styleG
       })
 
       // 4. Gerar arquivo para download
