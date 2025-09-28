@@ -281,6 +281,7 @@ const AdicionarTarefa: FC<PropsAdicionarTarefa> = ({
           pontuacaoTerceiro: pontuacaoTerceiro ? pontuacaoTerceiro : null,
           pontuacaoQuarto: pontuacaoQuarto ? pontuacaoQuarto : null,
           horario: horario ? horario : null,
+          parte: parte ? parte : 0,
         })
         .eq('id', idTarefa)
       setNotificationProps({
