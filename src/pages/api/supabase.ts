@@ -1,9 +1,19 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+let _supabase: SupabaseClient | null = null
 
-const supabase = createClient(supabaseUrl!, supabaseAnonKey!)
+function getSupabase(): SupabaseClient {
+  if (!_supabase) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    _supabase = createClient(supabaseUrl, supabaseAnonKey)
+  }
+  return _supabase
+}
+
+const supabase = typeof window !== 'undefined' || process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? getSupabase()
+  : (null as unknown as SupabaseClient)
 
 interface PropsResultadoSetor {
   forcask: number
