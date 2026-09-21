@@ -51,7 +51,7 @@ const Header = () => {
         </Link>
         <Link
           href={
-            'https://armadaorganizadora.com.br/gymkhana/194ac0f4-78f5-4344-a42c-e935ff91ecaa/tasks'
+            'https://www.equipeblackout.com/?q=tarefas&g=62818c8c3473f436c66846245f8ee600'
           }
           target='_blank'
           className='mr-8 uppercase hover:text-padrao-purple-300'
