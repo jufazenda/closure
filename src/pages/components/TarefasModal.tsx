@@ -16,7 +16,7 @@ import Image from 'next/image'
 import Toggle from './commons/Toggle'
 import supabase from '../api/supabase'
 import Notification from './commons/Notification'
-import { Edit, OpenInNew } from '@mui/icons-material'
+import { Delete, Edit, OpenInNew } from '@mui/icons-material'
 import Link from 'next/link'
 import AdicionarTarefa from './AdicionarTarefaModal'
 
@@ -174,6 +174,8 @@ const TarefasModal = ({
   const [observacao, setObservacao] = useState<string>('')
   const [horarioPadrao, setHorarioPadrao] = useState<string>('')
 
+  const [confirmDelete, setConfirmDelete] = useState(false)
+
   const [notificationProps, setNotificationProps] = useState({
     importantMessage: '',
     message: '',
@@ -208,6 +210,31 @@ const TarefasModal = ({
 
   const closeModal = () => {
     setActiveModal(false)
+  }
+
+  const handleDeleteTask = async () => {
+    const { error } = await supabase.rpc('delete_task', {
+      tarefa_id: idTarefa,
+    })
+
+    if (error) {
+      setNotificationProps({
+        importantMessage: 'Erro!',
+        message: 'Erro ao deletar tarefa.',
+        setShowNotification: true,
+        type: 0,
+      })
+    } else {
+      setNotificationProps({
+        importantMessage: 'Sucesso!',
+        message: 'Tarefa deletada com sucesso.',
+        setShowNotification: true,
+        type: 1,
+      })
+      setConfirmDelete(false)
+      setActiveModal(false)
+      setLoading(!loading)
+    }
   }
 
   const onClickButton = async () => {
@@ -800,6 +827,14 @@ const TarefasModal = ({
                   </span>
                 </div>
                 <div className='flex gap-5 w-full justify-end '>
+                  <Tooltip title='Deletar Tarefa'>
+                    <IconButton
+                      onClick={() => setConfirmDelete(true)}
+                      sx={{ color: '#ef4444' }}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
                   <Tooltip title='Editar'>
                     <IconButton
                       onClick={() => {
@@ -1595,6 +1630,36 @@ const TarefasModal = ({
             }
             type={notificationProps.type}
           />
+        )}
+        {confirmDelete && (
+          <div className='fixed inset-0 z-[60] flex items-center justify-center bg-black/50'>
+            <div className='bg-white rounded-lg p-8 flex flex-col items-center gap-6 max-w-sm mx-4'>
+              <span className={`${tomorrow.className} text-lg text-center text-black`}>
+                Tem certeza que deseja deletar esta tarefa?
+              </span>
+              <span className='text-sm text-gray-500 text-center'>
+                Esta ação não pode ser desfeita.
+              </span>
+              <div className='flex gap-4'>
+                <Button
+                  variant='outlined'
+                  className={`${tomorrow.className}`}
+                  onClick={() => setConfirmDelete(false)}
+                  sx={{ color: 'black', borderColor: 'black' }}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant='contained'
+                  className={`${tomorrow.className}`}
+                  onClick={handleDeleteTask}
+                  sx={{ backgroundColor: '#ef4444', '&:hover': { backgroundColor: '#dc2626' } }}
+                >
+                  Deletar
+                </Button>
+              </div>
+            </div>
+          </div>
         )}
         {editModalActive && chooseModal(modalComponentName)}
       </div>
