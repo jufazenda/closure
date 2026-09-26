@@ -134,109 +134,245 @@ const ExportModal = ({
         .select('*')
         .order('numero_lote')
 
-      // Filtrar apenas as tarefas selecionadas
-      const tarefasSelecionadas = filteredTarefas.filter(tarefa =>
-        selectedTarefas.includes(tarefa.id)
-      )
-
-      const tarefasData = (tarefasSelecionadas ?? []).map(tarefa => {
-        const lote = dataLotes?.find(
-          (l: { id: number | null }) => l.id === tarefa.id_lote
-        )
-        return {
-          numero_tarefa: tarefa.numero_tarefa,
-          tarefa: tarefa.tarefa,
-          descricao: tarefa.descricao_item,
-          observacoes: '',
-          data_entrega: '',
-          lote: lote ? lote.numero_lote : 'Sem lote',
-        }
-      })
-
-      // 1. Carregar modelo existente
-      const workbook = new ExcelJS.Workbook()
-      const response = await fetch('/modeloPlanilha2025.xlsx')
-      const arrayBuffer = await response.arrayBuffer()
-      await workbook.xlsx.load(arrayBuffer)
-
-      if (workbook.worksheets.length === 0) {
-        throw new Error('Modelo da planilha não contém worksheets ou não foi carregado corretamente')
-      }
-
-      const worksheet = workbook.worksheets[0]
+      const tarefasSelecionadas = filteredTarefas
+        .filter(tarefa => selectedTarefas.includes(tarefa.id))
+        .sort((a, b) => a.numero_tarefa - b.numero_tarefa)
 
       const loteTexto =
         selectedLote === 'all'
           ? 'todos'
-          : lotes.find(l => l.id === selectedLote)?.numero_lote ||
-            'Sem Lote'
+          : lotes.find(l => l.id === selectedLote)?.numero_lote || 'Sem Lote'
 
-      // Cabeçalho ajustado
-      const cellB9 = worksheet.getCell('B9')
-      const styleB9 = { ...cellB9.style }
-      if (!cellB9.isMerged) {
-        worksheet.mergeCells('B9:C9')
+      // Agrupar tarefas por lote
+      const gruposPorLote: { loteNumero: string; tarefas: PropsTarefas[] }[] = []
+
+      if (selectedLote === 'all') {
+        const loteMap = new Map<number | null, PropsTarefas[]>()
+        for (const t of tarefasSelecionadas) {
+          if (!loteMap.has(t.id_lote)) loteMap.set(t.id_lote, [])
+          loteMap.get(t.id_lote)!.push(t)
+        }
+        Array.from(loteMap.entries()).forEach(([loteId, tarefas]) => {
+          const loteInfo = dataLotes?.find((l: { id: number }) => l.id === loteId)
+          gruposPorLote.push({
+            loteNumero: loteInfo?.numero_lote || 'Sem Lote',
+            tarefas,
+          })
+        })
+        gruposPorLote.sort((a, b) => a.loteNumero.localeCompare(b.loteNumero))
+      } else {
+        const lote = lotes.find(l => l.id === selectedLote)
+        gruposPorLote.push({
+          loteNumero: lote?.numero_lote || 'Sem Lote',
+          tarefas: tarefasSelecionadas,
+        })
       }
-      cellB9.value = loteTexto
-      cellB9.style = styleB9
 
-      const cellK9 = worksheet.getCell('K9')
-      const styleK9 = { ...cellK9.style }
-      if (!cellK9.isMerged) {
-        worksheet.mergeCells('K9:L9')
+      const TEMPLATE_URL = '/formularioEntregaLote.xlsx'
+      const DATA_START_ROW = 7
+      const MAX_ROWS = 18
+
+      // Para cada lote, carregar uma cópia do template e preencher
+      const finalWorkbook = new ExcelJS.Workbook()
+
+      for (const grupo of gruposPorLote) {
+        const templateWb = new ExcelJS.Workbook()
+        const res = await fetch(TEMPLATE_URL)
+        const buf = await res.arrayBuffer()
+        await templateWb.xlsx.load(buf)
+
+        const templateWs = templateWb.worksheets[0]
+
+        // Row 1: BLACKOUT - Lexend 19.6
+        const cell1 = templateWs.getCell('A1')
+        const style1 = { ...cell1.style }
+        cell1.value = {
+          richText: [{ font: { size: 19.6, name: 'Lexend' }, text: 'BLACKOUT - Gincanas e Eventos' }],
+        }
+        cell1.style = style1
+
+        // Row 2: 41ª Gincana - Lexend bold 19.6 + "- 2026" Lexend regular 19.6
+        const cell2 = templateWs.getCell('A2')
+        const style2 = { ...cell2.style }
+        cell2.value = {
+          richText: [
+            { font: { bold: true, size: 19.6, name: 'Lexend' }, text: '41ª Gincana Cultural de São Jerônimo ' },
+            { font: { size: 19.6, name: 'Lexend' }, text: '- 2026' },
+          ],
+        }
+        cell2.style = style2
+
+        // Row 3: FORMULÁRIO - Calibri bold 16.08
+        const cell3 = templateWs.getCell('A3')
+        const style3 = { ...cell3.style }
+        cell3.value = {
+          richText: [{ font: { bold: true, size: 16.08, name: 'Calibri', family: 1 }, text: 'FORMULÁRIO DE ENTREGA DE LOTE' }],
+        }
+        cell3.style = style3
+
+        // Row 4: Lote nº - Calibri bold 13.08
+        const cellLote = templateWs.getCell('A4')
+        const styleLote = { ...cellLote.style }
+        cellLote.value = {
+          richText: [
+            { font: { bold: true, size: 13.08, name: 'Calibri', family: 1 }, text: `Lote n°: ${grupo.loteNumero.replace(/\D/g, '')}` },
+          ],
+        }
+        cellLote.style = styleLote
+
+        // Row 5: NOME DA EQUIPE - Calibri bold 12.15
+        const cellEquipe = templateWs.getCell('A5')
+        const styleEquipe = { ...cellEquipe.style }
+        cellEquipe.value = {
+          richText: [
+            { font: { bold: true, size: 12.15, name: 'Calibri', family: 1 }, text: `NOME DA EQUIPE: ${nomeEquipe}` },
+          ],
+        }
+        cellEquipe.style = styleEquipe
+
+        // Row 6: Header - tamanhos individuais
+        const headerCells = [
+          { col: 'A', size: 10.2, text: 'Entregou' },
+          { col: 'B', size: 13, text: 'Nº' },
+          { col: 'C', size: 11.2, text: 'TÍTULO DA TAREFA' },
+          { col: 'D', size: 11.2, text: 'RESPOSTA / O QUE:' },
+          { col: 'E', size: 11.2, text: 'Pontuação' },
+        ]
+        for (const h of headerCells) {
+          const cell = templateWs.getCell(`${h.col}6`)
+          const style = { ...cell.style }
+          cell.value = {
+            richText: [{ font: { bold: true, size: h.size, name: 'Calibri', family: 1, color: { argb: 'FFFFFFFF' } }, text: h.text }],
+          }
+          cell.style = style
+        }
+
+        // Preencher tarefas (Rows 7-24) - Calibri 12
+        const tarefasToFill = grupo.tarefas.slice(0, MAX_ROWS)
+        for (let i = 0; i < tarefasToFill.length; i++) {
+          const r = DATA_START_ROW + i
+          const t = tarefasToFill[i]
+
+          const cellB = templateWs.getCell(`B${r}`)
+          const styleB = { ...cellB.style }
+          cellB.value = { richText: [{ font: { size: 12, name: 'Calibri', family: 1 }, text: String(t.numero_tarefa) }] }
+          cellB.style = styleB
+
+          const cellC = templateWs.getCell(`C${r}`)
+          const styleC = { ...cellC.style }
+          cellC.value = { richText: [{ font: { size: 12, name: 'Calibri', family: 1 }, text: t.tarefa }] }
+          cellC.style = styleC
+
+          if (t.descricao_item) {
+            const cellD = templateWs.getCell(`D${r}`)
+            const styleD = { ...cellD.style }
+            cellD.value = { richText: [{ font: { size: 12, name: 'Calibri', family: 1 }, text: t.descricao_item }] }
+            cellD.style = styleD
+          }
+        }
+
+        // Row 25: Nome do Líder - Calibri bold 14.02
+        const cell25 = templateWs.getCell('A25')
+        const style25 = { ...cell25.style }
+        cell25.value = {
+          richText: [{ font: { bold: true, size: 14.02, name: 'Calibri', family: 1 }, text: 'Nome do Líder:' }],
+        }
+        cell25.style = style25
+
+        // Row 26: Blackout + Horário final - Calibri bold 14.02
+        const cell26A = templateWs.getCell('A26')
+        const style26A = { ...cell26A.style }
+        cell26A.value = {
+          richText: [{ font: { bold: true, size: 14.02, name: 'Calibri', family: 1 }, text: 'Blackout:' }],
+        }
+        cell26A.style = style26A
+
+        const cell26D = templateWs.getCell('D26')
+        const style26D = { ...cell26D.style }
+        cell26D.value = {
+          richText: [{ font: { bold: true, size: 14.02, name: 'Calibri', family: 1 }, text: 'Horário final:' }],
+        }
+        cell26D.style = style26D
+
+        // Centralizar títulos e header horizontalmente + padding em todas as células
+        for (const r of [1, 2, 3]) {
+          for (let c = 1; c <= 5; c++) {
+            const cell = templateWs.getCell(r, c)
+            cell.alignment = { ...cell.alignment, horizontal: 'center', vertical: 'middle', indent: 0 }
+          }
+        }
+        for (let c = 1; c <= 5; c++) {
+          const cell = templateWs.getCell(6, c)
+          cell.alignment = { ...cell.alignment, horizontal: 'center', vertical: 'middle', indent: 0 }
+        }
+        // Padding (indent) nas demais células
+        for (const r of [4, 5, 25, 26]) {
+          for (let c = 1; c <= 5; c++) {
+            const cell = templateWs.getCell(r, c)
+            cell.alignment = { ...cell.alignment, vertical: 'middle', indent: 1 }
+          }
+        }
+        for (let r = DATA_START_ROW; r <= DATA_START_ROW + MAX_ROWS - 1; r++) {
+          for (let c = 1; c <= 5; c++) {
+            const cell = templateWs.getCell(r, c)
+            cell.alignment = { ...cell.alignment, vertical: 'middle', indent: 1 }
+          }
+        }
+
+        // Copiar worksheet para o workbook final
+        const sheetName = `Lote ${grupo.loteNumero}`.substring(0, 31)
+        const newWs = finalWorkbook.addWorksheet(sheetName)
+
+        // Copiar larguras de colunas
+        for (let c = 1; c <= 5; c++) {
+          const origCol = templateWs.getColumn(c)
+          newWs.getColumn(c).width = origCol.width
+        }
+
+        // Copiar merges
+        const merges = (templateWs.model as any).merges || []
+        for (const merge of merges) {
+          newWs.mergeCells(merge)
+        }
+
+        // Copiar rows (conteúdo, estilos, alturas)
+        for (let r = 1; r <= templateWs.rowCount; r++) {
+          const srcRow = templateWs.getRow(r)
+          const dstRow = newWs.getRow(r)
+          dstRow.height = srcRow.height
+
+          for (let c = 1; c <= 5; c++) {
+            const src = templateWs.getCell(r, c)
+            const dst = newWs.getCell(r, c)
+            dst.value = src.value
+            dst.style = JSON.parse(JSON.stringify(src.style))
+            dst.alignment = { ...dst.alignment, vertical: 'middle' }
+          }
+        }
+
+        // Page setup
+        newWs.pageSetup = { ...templateWs.pageSetup }
       }
-      cellK9.value = nomeEquipe
-      cellK9.style = styleK9
 
-      // 3. Preencher tarefas a partir da linha 15 (duas linhas por tarefa)
-      let startRow = 15
-      tarefasData.forEach((t, i) => {
-        const rowStart = startRow + i * 2
-        const rowEnd = rowStart + 1
-
-        // Número da tarefa em A
-        const cellA = worksheet.getCell(`A${rowStart}`)
-        const styleA = { ...cellA.style }
-        cellA.value = t.numero_tarefa
-        cellA.style = styleA
-
-        // Título em B-F
-        const cellB = worksheet.getCell(`B${rowStart}`)
-        const styleB = { ...cellB.style }
-        cellB.value = t.tarefa
-        cellB.style = styleB
-
-        // Descrição em G-J
-        const cellG = worksheet.getCell(`G${rowStart}`)
-        const styleG = { ...cellG.style }
-        cellG.value = t.descricao
-        cellG.style = styleG
-      })
-
-      // 4. Gerar arquivo para download
-      const buffer = await workbook.xlsx.writeBuffer()
+      const buffer = await finalWorkbook.xlsx.writeBuffer()
       const blob = new Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       })
 
       const link = document.createElement('a')
       link.href = URL.createObjectURL(blob)
-
-      // Nome do arquivo baseado no filtro
-      const nomeArquivo =
+      link.download =
         selectedLote === 'all'
-          ? `tarefas_todas_${selectedTarefas.length}itens.xlsx`
-          : `tarefas_lote_${loteTexto}_${selectedTarefas.length}itens.xlsx`
-
-      link.download = nomeArquivo
+          ? `formulario_entrega_todos_${selectedTarefas.length}itens.xlsx`
+          : `formulario_entrega_lote_${loteTexto}_${selectedTarefas.length}itens.xlsx`
       link.click()
+      URL.revokeObjectURL(link.href)
 
       onClose()
     } catch (error: unknown) {
       if (error && typeof error === 'object' && 'message' in error) {
-        const errMsg = (error as { message?: string; stack?: string }).message
-        const errStack = (error as { message?: string; stack?: string }).stack
-        console.error('Erro ao exportar:', errMsg, errStack, error)
+        const errMsg = (error as { message?: string }).message
+        console.error('Erro ao exportar:', error)
         alert(`Erro ao exportar planilha: ${errMsg || 'Erro desconhecido'}`)
       } else {
         console.error('Erro ao exportar:', error)
@@ -290,6 +426,7 @@ const ExportModal = ({
             ...lotes,
           ]}
           getOptionLabel={option => option?.numero_lote ?? ''}
+          isOptionEqualToValue={(option, value) => option?.id === value?.id}
           ListboxProps={{
             style: { maxHeight: 190, fontFamily: 'Montserrat' },
           }}

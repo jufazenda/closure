@@ -139,25 +139,13 @@ const TarefasModal = ({
   const [tarefaCumpridaMed, setTarefaCumpridaMed] = useState(false)
 
   const [forcaskColocacao, setForcaskColocacao] =
-    useState<PropsColocacao | null>({
-      id: 0,
-      label: '',
-    })
+    useState<PropsColocacao | null>(null)
   const [aguiaColocacao, setAguiaColocacao] =
-    useState<PropsColocacao | null>({
-      id: 0,
-      label: '',
-    })
+    useState<PropsColocacao | null>(null)
   const [poupancaColocacao, setPoupancaColocacao] =
-    useState<PropsColocacao | null>({
-      id: 0,
-      label: '',
-    })
+    useState<PropsColocacao | null>(null)
   const [medonhosColocacao, setMedonhosColocacao] =
-    useState<PropsColocacao | null>({
-      id: 0,
-      label: '',
-    })
+    useState<PropsColocacao | null>(null)
 
   const [penalidadeSK, setPenalidadeSK] = useState<number | string>('')
   const [penalidadeAguia, setPenalidadeAguia] = useState<number | string>(
@@ -905,8 +893,9 @@ const TarefasModal = ({
                           <Image
                             src='/logosEquipes/sk.png'
                             alt='Logo Força SK'
-                            width={110}
+                            width={130}
                             height={100}
+                            style={{ width: 'auto', height: 'auto' }}
                             priority
                           />
                           <Toggle
@@ -964,6 +953,7 @@ const TarefasModal = ({
                             alt='Logo Águia de Fogo'
                             width={130}
                             height={100}
+                            style={{ width: 'auto', height: 'auto' }}
                             priority
                           />
                           <Toggle
@@ -1021,6 +1011,7 @@ const TarefasModal = ({
                             alt='Logo Poupança'
                             width={130}
                             height={100}
+                            style={{ width: 'auto', height: 'auto' }}
                             priority
                           />
                           <Toggle
@@ -1078,6 +1069,7 @@ const TarefasModal = ({
                             alt='Logo Medonhos'
                             width={130}
                             height={100}
+                            style={{ width: 'auto', height: 'auto' }}
                             priority
                           />
                           <Toggle
@@ -1140,8 +1132,9 @@ const TarefasModal = ({
                           <Image
                             src='/logosEquipes/sk.png'
                             alt='Logo Força SK'
-                            width={110}
+                            width={130}
                             height={100}
+                            style={{ width: 'auto', height: 'auto' }}
                             priority
                           />
                           <Autocomplete
@@ -1237,6 +1230,7 @@ const TarefasModal = ({
                             alt='Logo Águia de Fogo'
                             width={130}
                             height={100}
+                            style={{ width: 'auto', height: 'auto' }}
                             priority
                           />
                           <Autocomplete
@@ -1332,6 +1326,7 @@ const TarefasModal = ({
                             alt='Logo Poupança'
                             width={130}
                             height={100}
+                            style={{ width: 'auto', height: 'auto' }}
                             priority
                           />
                           <Autocomplete
@@ -1427,6 +1422,7 @@ const TarefasModal = ({
                             alt='Logo Medonhos'
                             width={130}
                             height={100}
+                            style={{ width: 'auto', height: 'auto' }}
                             priority
                           />
                           <Autocomplete
