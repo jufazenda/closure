@@ -183,54 +183,97 @@ const ExportModal = ({
 
         const templateWs = templateWb.worksheets[0]
 
+        const EXTRA_ROWS = 10
+        const totalDataRows = Math.max(MAX_ROWS, grupo.tarefas.length + EXTRA_ROWS)
+        const footerStartRow = DATA_START_ROW + totalDataRows
+        const lastRow = footerStartRow + 1
+
+        // Criar worksheet final direto (evita problemas de merge/cópia do template)
+        const sheetName = `Lote ${grupo.loteNumero}`.substring(0, 31)
+        const newWs = finalWorkbook.addWorksheet(sheetName)
+
+        // Copiar larguras de colunas do template
+        for (let c = 1; c <= 5; c++) {
+          newWs.getColumn(c).width = templateWs.getColumn(c).width
+        }
+
+        // Copiar merges do cabeçalho (linhas 1-6) e replicar merges do rodapé (linhas 25-26) na posição dinâmica
+        const merges = (templateWs.model as any).merges || []
+        for (const merge of merges) {
+          const rowNum = parseInt(merge.split(':')[0].replace(/[A-Z]/g, ''))
+          if (rowNum <= 6) {
+            newWs.mergeCells(merge)
+          } else if (rowNum >= 25 && rowNum <= 26) {
+            const offset = rowNum - 25
+            const shifted = merge.replace(/(\d+)/g, (_: string, num: string) => {
+              return String(parseInt(num) - 25 + footerStartRow)
+            })
+            newWs.mergeCells(shifted)
+          }
+        }
+
+        // Copiar estilos do cabeçalho (linhas 1-6) do template
+        for (let r = 1; r <= 6; r++) {
+          const srcRow = templateWs.getRow(r)
+          const dstRow = newWs.getRow(r)
+          dstRow.height = srcRow.height
+          for (let c = 1; c <= 5; c++) {
+            const src = templateWs.getCell(r, c)
+            const dst = newWs.getCell(r, c)
+            dst.style = JSON.parse(JSON.stringify(src.style))
+          }
+        }
+
+        // Copiar estilo de uma linha de dados do template pra todas as linhas de dados
+        const templateDataRow = DATA_START_ROW
+        const dataRowHeight = templateWs.getRow(templateDataRow).height
+        const dataStyles: object[] = []
+        for (let c = 1; c <= 5; c++) {
+          dataStyles.push(JSON.parse(JSON.stringify(templateWs.getCell(templateDataRow, c).style)))
+        }
+        for (let r = DATA_START_ROW; r < DATA_START_ROW + totalDataRows; r++) {
+          newWs.getRow(r).height = dataRowHeight
+          for (let c = 1; c <= 5; c++) {
+            newWs.getCell(r, c).style = JSON.parse(JSON.stringify(dataStyles[c - 1]))
+          }
+        }
+
         // Row 1: BLACKOUT - Lexend 19.6
-        const cell1 = templateWs.getCell('A1')
-        const style1 = { ...cell1.style }
+        const cell1 = newWs.getCell('A1')
         cell1.value = {
           richText: [{ font: { size: 19.6, name: 'Lexend' }, text: 'BLACKOUT - Gincanas e Eventos' }],
         }
-        cell1.style = style1
 
         // Row 2: 41ª Gincana - Lexend bold 19.6 + "- 2026" Lexend regular 19.6
-        const cell2 = templateWs.getCell('A2')
-        const style2 = { ...cell2.style }
+        const cell2 = newWs.getCell('A2')
         cell2.value = {
           richText: [
             { font: { bold: true, size: 19.6, name: 'Lexend' }, text: '41ª Gincana Cultural de São Jerônimo ' },
             { font: { size: 19.6, name: 'Lexend' }, text: '- 2026' },
           ],
         }
-        cell2.style = style2
 
         // Row 3: FORMULÁRIO - Calibri bold 16.08
-        const cell3 = templateWs.getCell('A3')
-        const style3 = { ...cell3.style }
+        const cell3 = newWs.getCell('A3')
         cell3.value = {
           richText: [{ font: { bold: true, size: 16.08, name: 'Calibri', family: 1 }, text: 'FORMULÁRIO DE ENTREGA DE LOTE' }],
         }
-        cell3.style = style3
 
         // Row 4: Lote nº - Calibri bold 13.08
-        const cellLote = templateWs.getCell('A4')
-        const styleLote = { ...cellLote.style }
-        cellLote.value = {
+        newWs.getCell('A4').value = {
           richText: [
             { font: { bold: true, size: 13.08, name: 'Calibri', family: 1 }, text: `Lote n°: ${grupo.loteNumero.replace(/\D/g, '')}` },
           ],
         }
-        cellLote.style = styleLote
 
         // Row 5: NOME DA EQUIPE - Calibri bold 12.15
-        const cellEquipe = templateWs.getCell('A5')
-        const styleEquipe = { ...cellEquipe.style }
-        cellEquipe.value = {
+        newWs.getCell('A5').value = {
           richText: [
             { font: { bold: true, size: 12.15, name: 'Calibri', family: 1 }, text: `NOME DA EQUIPE: ${nomeEquipe}` },
           ],
         }
-        cellEquipe.style = styleEquipe
 
-        // Row 6: Header - tamanhos individuais
+        // Row 6: Header
         const headerCells = [
           { col: 'A', size: 10.2, text: 'Entregou' },
           { col: 'B', size: 13, text: 'Nº' },
@@ -239,114 +282,68 @@ const ExportModal = ({
           { col: 'E', size: 11.2, text: 'Pontuação' },
         ]
         for (const h of headerCells) {
-          const cell = templateWs.getCell(`${h.col}6`)
-          const style = { ...cell.style }
-          cell.value = {
+          newWs.getCell(`${h.col}6`).value = {
             richText: [{ font: { bold: true, size: h.size, name: 'Calibri', family: 1, color: { argb: 'FFFFFFFF' } }, text: h.text }],
           }
-          cell.style = style
         }
 
-        // Preencher tarefas (Rows 7-24) - Calibri 12
-        const tarefasToFill = grupo.tarefas.slice(0, MAX_ROWS)
-        for (let i = 0; i < tarefasToFill.length; i++) {
+        // Preencher tarefas - Calibri 12
+        for (let i = 0; i < grupo.tarefas.length; i++) {
           const r = DATA_START_ROW + i
-          const t = tarefasToFill[i]
+          const t = grupo.tarefas[i]
 
-          const cellB = templateWs.getCell(`B${r}`)
-          const styleB = { ...cellB.style }
-          cellB.value = { richText: [{ font: { size: 12, name: 'Calibri', family: 1 }, text: String(t.numero_tarefa) }] }
-          cellB.style = styleB
-
-          const cellC = templateWs.getCell(`C${r}`)
-          const styleC = { ...cellC.style }
-          cellC.value = { richText: [{ font: { size: 12, name: 'Calibri', family: 1 }, text: t.tarefa }] }
-          cellC.style = styleC
+          newWs.getCell(`B${r}`).value = { richText: [{ font: { size: 12, name: 'Calibri', family: 1 }, text: String(t.numero_tarefa) }] }
+          newWs.getCell(`C${r}`).value = { richText: [{ font: { size: 12, name: 'Calibri', family: 1 }, text: t.tarefa }] }
 
           if (t.descricao_item) {
-            const cellD = templateWs.getCell(`D${r}`)
-            const styleD = { ...cellD.style }
-            cellD.value = { richText: [{ font: { size: 12, name: 'Calibri', family: 1 }, text: t.descricao_item }] }
-            cellD.style = styleD
+            newWs.getCell(`D${r}`).value = { richText: [{ font: { size: 12, name: 'Calibri', family: 1 }, text: t.descricao_item }] }
           }
         }
 
-        // Row 25: Nome do Líder - Calibri bold 14.02
-        const cell25 = templateWs.getCell('A25')
-        const style25 = { ...cell25.style }
-        cell25.value = {
+        // Copiar estilos do rodapé do template (linhas 25-26) para as linhas dinâmicas do rodapé
+        for (let offset = 0; offset <= 1; offset++) {
+          const srcRow = templateWs.getRow(25 + offset)
+          const dstRow = newWs.getRow(footerStartRow + offset)
+          dstRow.height = srcRow.height
+          for (let c = 1; c <= 5; c++) {
+            const src = templateWs.getCell(25 + offset, c)
+            const dst = newWs.getCell(footerStartRow + offset, c)
+            dst.style = JSON.parse(JSON.stringify(src.style))
+          }
+        }
+
+        // Footer: Nome do Líder
+        newWs.getCell(`A${footerStartRow}`).value = {
           richText: [{ font: { bold: true, size: 14.02, name: 'Calibri', family: 1 }, text: 'Nome do Líder:' }],
         }
-        cell25.style = style25
 
-        // Row 26: Blackout + Horário final - Calibri bold 14.02
-        const cell26A = templateWs.getCell('A26')
-        const style26A = { ...cell26A.style }
-        cell26A.value = {
+        // Footer: Blackout + Horário final
+        newWs.getCell(`A${footerStartRow + 1}`).value = {
           richText: [{ font: { bold: true, size: 14.02, name: 'Calibri', family: 1 }, text: 'Blackout:' }],
         }
-        cell26A.style = style26A
-
-        const cell26D = templateWs.getCell('D26')
-        const style26D = { ...cell26D.style }
-        cell26D.value = {
+        newWs.getCell(`D${footerStartRow + 1}`).value = {
           richText: [{ font: { bold: true, size: 14.02, name: 'Calibri', family: 1 }, text: 'Horário final:' }],
         }
-        cell26D.style = style26D
 
-        // Centralizar títulos e header horizontalmente + padding em todas as células
+        // Centralizar títulos e header
         for (const r of [1, 2, 3]) {
           for (let c = 1; c <= 5; c++) {
-            const cell = templateWs.getCell(r, c)
-            cell.alignment = { ...cell.alignment, horizontal: 'center', vertical: 'middle', indent: 0 }
+            newWs.getCell(r, c).alignment = { ...newWs.getCell(r, c).alignment, horizontal: 'center', vertical: 'middle', indent: 0 }
           }
         }
         for (let c = 1; c <= 5; c++) {
-          const cell = templateWs.getCell(6, c)
-          cell.alignment = { ...cell.alignment, horizontal: 'center', vertical: 'middle', indent: 0 }
+          newWs.getCell(6, c).alignment = { ...newWs.getCell(6, c).alignment, horizontal: 'center', vertical: 'middle', indent: 0 }
         }
-        // Padding (indent) nas demais células
-        for (const r of [4, 5, 25, 26]) {
+
+        // Padding nas demais células
+        for (const r of [4, 5, footerStartRow, footerStartRow + 1]) {
           for (let c = 1; c <= 5; c++) {
-            const cell = templateWs.getCell(r, c)
-            cell.alignment = { ...cell.alignment, vertical: 'middle', indent: 1 }
+            newWs.getCell(r, c).alignment = { ...newWs.getCell(r, c).alignment, vertical: 'middle', indent: 1 }
           }
         }
-        for (let r = DATA_START_ROW; r <= DATA_START_ROW + MAX_ROWS - 1; r++) {
+        for (let r = DATA_START_ROW; r < DATA_START_ROW + totalDataRows; r++) {
           for (let c = 1; c <= 5; c++) {
-            const cell = templateWs.getCell(r, c)
-            cell.alignment = { ...cell.alignment, vertical: 'middle', indent: 1 }
-          }
-        }
-
-        // Copiar worksheet para o workbook final
-        const sheetName = `Lote ${grupo.loteNumero}`.substring(0, 31)
-        const newWs = finalWorkbook.addWorksheet(sheetName)
-
-        // Copiar larguras de colunas
-        for (let c = 1; c <= 5; c++) {
-          const origCol = templateWs.getColumn(c)
-          newWs.getColumn(c).width = origCol.width
-        }
-
-        // Copiar merges
-        const merges = (templateWs.model as any).merges || []
-        for (const merge of merges) {
-          newWs.mergeCells(merge)
-        }
-
-        // Copiar rows (conteúdo, estilos, alturas)
-        for (let r = 1; r <= templateWs.rowCount; r++) {
-          const srcRow = templateWs.getRow(r)
-          const dstRow = newWs.getRow(r)
-          dstRow.height = srcRow.height
-
-          for (let c = 1; c <= 5; c++) {
-            const src = templateWs.getCell(r, c)
-            const dst = newWs.getCell(r, c)
-            dst.value = src.value
-            dst.style = JSON.parse(JSON.stringify(src.style))
-            dst.alignment = { ...dst.alignment, vertical: 'middle' }
+            newWs.getCell(r, c).alignment = { ...newWs.getCell(r, c).alignment, vertical: 'middle', indent: 1 }
           }
         }
 
