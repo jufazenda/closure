@@ -189,6 +189,12 @@ const CardTarefa = ({
         return 'bg-padrao-purple-500 hover:bg-padrao-purple-300'
       case 7:
         return 'bg-padrao-red-500 hover:bg-padrao-red-300'
+      case 8:
+        return 'bg-padrao-teal-500 hover:bg-padrao-teal-300'
+      case 9:
+        return 'bg-padrao-lime-500 hover:bg-padrao-lime-300'
+      case 10:
+        return 'bg-padrao-indigo-500 hover:bg-padrao-indigo-300'
       default:
         return 'bg-gray-600 hover:bg-gray-600'
     }

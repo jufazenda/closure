@@ -61,6 +61,12 @@ const Modal: FC<PropsModal> = ({
         return 'bg-padrao-purple-300'
       case 7:
         return 'bg-padrao-red-300'
+      case 8:
+        return 'bg-padrao-teal-300'
+      case 9:
+        return 'bg-padrao-lime-300'
+      case 10:
+        return 'bg-padrao-indigo-300'
       default:
         return 'bg-gray-600'
     }

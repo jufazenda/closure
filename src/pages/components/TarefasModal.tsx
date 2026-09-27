@@ -759,6 +759,12 @@ const TarefasModal = ({
         return 'bg-padrao-purple-500'
       case 7:
         return 'bg-padrao-red-500'
+      case 8:
+        return 'bg-padrao-teal-500'
+      case 9:
+        return 'bg-padrao-lime-500'
+      case 10:
+        return 'bg-padrao-indigo-500'
       default:
         return 'bg-gray-600'
     }
@@ -780,6 +786,12 @@ const TarefasModal = ({
         return 'bg-padrao-purple-300'
       case 7:
         return 'bg-padrao-red-300'
+      case 8:
+        return 'bg-padrao-teal-300'
+      case 9:
+        return 'bg-padrao-lime-300'
+      case 10:
+        return 'bg-padrao-indigo-300'
       default:
         return 'bg-gray-600'
     }
